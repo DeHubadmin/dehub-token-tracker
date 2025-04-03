@@ -10,6 +10,7 @@ interface MarketDataCardProps {
   icon?: React.ReactNode;
   className?: string;
   isLoading?: boolean;
+  tooltipContent?: string;
 }
 
 const MarketDataCard: React.FC<MarketDataCardProps> = ({
@@ -18,7 +19,8 @@ const MarketDataCard: React.FC<MarketDataCardProps> = ({
   description,
   icon,
   className,
-  isLoading = false
+  isLoading = false,
+  tooltipContent
 }) => {
   if (isLoading) {
     return (
@@ -33,7 +35,7 @@ const MarketDataCard: React.FC<MarketDataCardProps> = ({
   }
 
   return (
-    <Card className={cn("dehub-card p-6 dehub-glow", className)}>
+    <Card className={cn("dehub-card p-6 dehub-glow", className)} title={tooltipContent}>
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-sm font-medium text-slate-400 mb-1">{title}</h3>

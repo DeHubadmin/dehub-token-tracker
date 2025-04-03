@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
 
 // Define CORS headers
@@ -35,7 +34,6 @@ async function fetchTokenMarketData() {
       const tokenData = data[0];
       return {
         price: tokenData.current_price,
-        marketCap: tokenData.market_cap,
         totalVolume: tokenData.total_volume,
         priceChange24h: tokenData.price_change_24h,
         priceChangePercentage24h: tokenData.price_change_percentage_24h,
@@ -45,9 +43,6 @@ async function fetchTokenMarketData() {
         priceChangePercentage1y: tokenData.price_change_percentage_1y_in_currency,
         high24h: tokenData.high_24h,
         low24h: tokenData.low_24h,
-        circulatingSupply: tokenData.circulating_supply,
-        totalSupply: tokenData.total_supply,
-        maxSupply: tokenData.max_supply,
         lastUpdated: tokenData.last_updated
       };
     } else {
@@ -59,7 +54,6 @@ async function fetchTokenMarketData() {
     // Fallback to mock market data
     return {
       price: 0.012,
-      marketCap: 95320353,
       totalVolume: 2345678,
       priceChange24h: 0.00023,
       priceChangePercentage24h: 1.95,
@@ -174,6 +168,9 @@ serve(async (req) => {
 
     // Calculate total supply across chains
     const totalSupplyAcrossChains = bnbChainData.totalSupply + baseChainData.totalSupply;
+    
+    // Calculate market cap based on price and total supply
+    const calculatedMarketCap = marketData.price * totalSupplyAcrossChains;
 
     // Construct the token info
     const tokenInfo = {
@@ -189,8 +186,8 @@ serve(async (req) => {
       // Market data
       price: marketData.price,
       formattedPrice: formatCurrency(marketData.price),
-      marketCap: marketData.marketCap,
-      formattedMarketCap: formatCurrency(marketData.marketCap),
+      marketCap: calculatedMarketCap,
+      formattedMarketCap: formatCurrency(calculatedMarketCap),
       totalVolume: marketData.totalVolume,
       formattedTotalVolume: formatCurrency(marketData.totalVolume),
       priceChange24h: marketData.priceChange24h,

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchTokenInfo } from '@/services/tokenService';
@@ -49,7 +48,8 @@ const TokenDashboard: React.FC = () => {
         <MarketDataCard
           title="Market Cap"
           value={tokenInfo?.formattedMarketCap || '$0.00'}
-          description="Total market capitalization"
+          description="Price × Circulating Supply"
+          tooltipContent="Calculated by multiplying the current price by the circulating supply"
           icon={<Activity size={24} />}
           isLoading={isLoading}
         />
