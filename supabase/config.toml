@@ -1,1 +1,5 @@
+
 project_id = "wgmvohihwaffavfstmfr"
+
+[functions.fetchTokenSupply]
+verify_jwt = false
