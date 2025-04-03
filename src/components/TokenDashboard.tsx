@@ -7,6 +7,8 @@ import SupplyMetricCard from './SupplyMetricCard';
 import ChainSupplyCard from './ChainSupplyCard';
 import MarketDataCard from './MarketDataCard';
 import PriceChangeCard from './PriceChangeCard';
+import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock, History } from 'lucide-react';
 
 const TokenDashboard: React.FC = () => {
@@ -18,7 +20,7 @@ const TokenDashboard: React.FC = () => {
   });
 
   // If there's an error or tokenInfo is null, we show loading state
-  const isLoadingOrError = isLoading || error || !tokenInfo;
+  const isLoadingOrError = isLoading || error !== null || !tokenInfo;
 
   return (
     <div className="container px-4 py-8 mx-auto max-w-6xl">
