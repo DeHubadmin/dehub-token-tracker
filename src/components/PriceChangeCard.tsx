@@ -13,6 +13,7 @@ interface PriceChangeCardProps {
   className?: string;
   isLoading?: boolean;
   icon?: React.ReactNode;
+  isMultiple?: boolean;
 }
 
 const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
@@ -22,7 +23,8 @@ const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
   timeframe,
   className,
   isLoading = false,
-  icon
+  icon,
+  isMultiple = false
 }) => {
   const isPositive = percentage >= 0;
   const displayValue = value !== undefined ? value.toFixed(8) : undefined;
@@ -47,15 +49,21 @@ const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
         {icon && <div className="text-indigo-400">{icon}</div>}
       </div>
       
-      <div className={cn(
-        "flex items-center text-2xl font-bold mb-1",
-        isPositive ? "text-green-500" : "text-red-500"
-      )}>
-        {isPositive ? <ArrowUpRight size={24} className="text-green-500" /> : <ArrowDownRight size={24} className="text-red-500" />}
-        <span>{Math.abs(percentage).toFixed(2)}%</span>
-      </div>
+      {isMultiple ? (
+        <div className="text-2xl font-bold mb-1 text-indigo-500">
+          {value !== undefined ? `${value.toFixed(1)}x` : `${Math.abs(percentage).toFixed(1)}x`}
+        </div>
+      ) : (
+        <div className={cn(
+          "flex items-center text-2xl font-bold mb-1",
+          isPositive ? "text-green-500" : "text-red-500"
+        )}>
+          {isPositive ? <ArrowUpRight size={24} className="text-green-500" /> : <ArrowDownRight size={24} className="text-red-500" />}
+          <span>{Math.abs(percentage).toFixed(2)}%</span>
+        </div>
+      )}
       
-      {displayValue && (
+      {displayValue && !isMultiple && (
         <p className={cn(
           "text-base",
           isPositive ? "text-green-400" : "text-red-400"

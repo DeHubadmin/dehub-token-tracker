@@ -2,7 +2,7 @@
 import React from 'react';
 import { TokenInfo } from '@/services/tokenService';
 import PriceChangeCard from '../PriceChangeCard';
-import { TrendingUp, Clock1, History, Trophy, ArrowDownCircle } from 'lucide-react';
+import { TrendingUp, Clock1, History, Trophy, Target } from 'lucide-react';
 
 interface PriceChangesSectionProps {
   tokenInfo: TokenInfo | undefined;
@@ -89,15 +89,17 @@ const PriceChangesSection: React.FC<PriceChangesSectionProps> = ({
         />
       </div>
 
-      {/* All-Time Low */}
+      {/* Multiples to ATH */}
       <div className="grid grid-cols-1 gap-6 mb-8">
         <PriceChangeCard
-          title="All Time Low"
-          percentage={0} // Not a price change, so we'll show 0
-          timeframe={`ATL: ${tokenInfo?.formattedAllTimeLow || '$0.00000'}`}
+          title="Multiples to ATH"
+          percentage={0}
+          value={tokenInfo?.multiplesToATH || 0}
+          timeframe={`ATH: ${tokenInfo?.formattedAllTimeHigh || '$0.00000'}`}
           isLoading={isLoading}
           className="h-full"
-          icon={<ArrowDownCircle size={20} />}
+          icon={<Target size={20} />}
+          isMultiple={true}
         />
       </div>
     </>

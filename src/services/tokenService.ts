@@ -38,6 +38,7 @@ export interface TokenInfo {
   priceChangePercentage1y?: number;
   priceChangePercentageAllTime?: number;
   priceChangePercentageFromATH?: number;
+  multiplesToATH?: number;
   allTimeHigh?: number;
   formattedAllTimeHigh?: string;
   allTimeLow?: number;

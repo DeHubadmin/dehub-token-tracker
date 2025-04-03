@@ -69,6 +69,7 @@ async function handleRequest(req: Request) {
       priceChangePercentage1y: marketData.priceChangePercentage1y,
       priceChangePercentageAllTime: marketData.priceChangePercentageAllTime,
       priceChangePercentageFromATH: marketData.priceChangePercentageFromATH,
+      multiplesToATH: marketData.multiplesToATH,
       allTimeHigh: marketData.allTimeHigh,
       formattedAllTimeHigh: marketData.formattedAllTimeHigh,
       allTimeLow: marketData.allTimeLow,

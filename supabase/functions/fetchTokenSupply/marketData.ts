@@ -29,6 +29,9 @@ export async function fetchMarketData() {
   // This represents the change from all-time low to current price
   const allTimePercentageChange = ((tokenData.current_price - allTimeLow) / allTimeLow) * 100;
   
+  // Calculate the multiples needed to reach ATH from current price
+  const multiplesToATH = allTimeHigh / tokenData.current_price;
+  
   return {
     price: tokenData.current_price,
     totalVolume: tokenData.total_volume,
@@ -41,6 +44,7 @@ export async function fetchMarketData() {
     priceChangePercentage1y: tokenData.price_change_percentage_1y_in_currency,
     priceChangePercentageAllTime: allTimePercentageChange, // Now dynamically calculated
     priceChangePercentageFromATH: changeFromATH,
+    multiplesToATH: multiplesToATH, // Added new property for multiples to ATH
     allTimeHigh: allTimeHigh,
     formattedAllTimeHigh: formatPrice(allTimeHigh),
     allTimeLow: allTimeLow,
