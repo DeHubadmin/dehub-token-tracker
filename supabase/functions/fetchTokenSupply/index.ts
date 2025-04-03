@@ -19,6 +19,16 @@ function formatCurrency(num: number): string {
   }).format(num);
 }
 
+// Utility function to format price with 4 decimal places
+function formatPrice(num: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 4,
+    maximumFractionDigits: 4,
+  }).format(num);
+}
+
 // Utility function to format large numbers with commas
 function formatNumber(num: number): string {
   return new Intl.NumberFormat('en-US').format(num);
@@ -192,7 +202,7 @@ async function handleRequest(req: Request) {
       formattedTotalSupplyAcrossChains: formatNumber(totalSupplyAcrossChains),
       // Market data
       price: marketData.price,
-      formattedPrice: formatCurrency(marketData.price),
+      formattedPrice: formatPrice(marketData.price), // Using the new 4 decimal price formatter
       marketCap: calculatedMarketCap,
       formattedMarketCap: formatCurrency(calculatedMarketCap),
       totalVolume: marketData.totalVolume,
@@ -205,9 +215,9 @@ async function handleRequest(req: Request) {
       priceChangePercentage1y: marketData.priceChangePercentage1y,
       priceChangePercentageAllTime: marketData.priceChangePercentageAllTime,
       high24h: marketData.high24h,
-      formattedHigh24h: formatCurrency(marketData.high24h),
+      formattedHigh24h: formatPrice(marketData.high24h), // Using the new 4 decimal price formatter
       low24h: marketData.low24h,
-      formattedLow24h: formatCurrency(marketData.low24h),
+      formattedLow24h: formatPrice(marketData.low24h), // Using the new 4 decimal price formatter
       lastUpdated: marketData.lastUpdated
     };
     
