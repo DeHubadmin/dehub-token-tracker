@@ -18,10 +18,16 @@ export async function fetchMarketData() {
     throw new Error("No token data returned from CoinGecko");
   }
   
-  // Update with correct all-time high value
+  // Update with correct all-time high and low values
   const allTimeHigh = 0.065;
-  const allTimeLow = 0.00008;
+  const allTimeLow = 0.00009;  // Updated from 0.00008 to 0.00009
+  
+  // Calculate percentage changes correctly
   const changeFromATH = ((tokenData.current_price - allTimeHigh) / allTimeHigh) * 100;
+  
+  // Calculate all-time percentage change from initial price to current price
+  // This represents the change from all-time low to current price
+  const allTimePercentageChange = ((tokenData.current_price - allTimeLow) / allTimeLow) * 100;
   
   return {
     price: tokenData.current_price,
@@ -33,7 +39,7 @@ export async function fetchMarketData() {
     priceChangePercentage14d: tokenData.price_change_percentage_14d_in_currency,
     priceChangePercentage30d: tokenData.price_change_percentage_30d_in_currency,
     priceChangePercentage1y: tokenData.price_change_percentage_1y_in_currency,
-    priceChangePercentageAllTime: 156.75, // Hard to get from API, keeping this hard-coded
+    priceChangePercentageAllTime: allTimePercentageChange, // Now dynamically calculated
     priceChangePercentageFromATH: changeFromATH,
     allTimeHigh: allTimeHigh,
     formattedAllTimeHigh: formatPrice(allTimeHigh),
