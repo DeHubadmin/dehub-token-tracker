@@ -45,8 +45,10 @@ export interface TokenInfo {
 
 export async function fetchTokenInfo(): Promise<TokenInfo | null> {
   try {
-    // Call the Supabase Edge Function
-    const { data, error } = await supabase.functions.invoke('fetchTokenSupply');
+    // Call the Supabase Edge Function with GET method
+    const { data, error } = await supabase.functions.invoke('fetchTokenSupply', {
+      method: 'GET'
+    });
     
     if (error) {
       console.error("Error invoking fetchTokenSupply function:", error);
