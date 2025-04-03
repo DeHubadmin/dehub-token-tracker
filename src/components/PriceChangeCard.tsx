@@ -11,6 +11,7 @@ interface PriceChangeCardProps {
   timeframe?: string;
   className?: string;
   isLoading?: boolean;
+  icon?: React.ReactNode;
 }
 
 const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
@@ -19,7 +20,8 @@ const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
   value,
   timeframe,
   className,
-  isLoading = false
+  isLoading = false,
+  icon
 }) => {
   const isPositive = percentage >= 0;
   const displayValue = value !== undefined ? value.toFixed(8) : undefined;
@@ -38,7 +40,10 @@ const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
 
   return (
     <Card className={cn("dehub-card p-6", className)}>
-      <h3 className="text-sm font-medium text-slate-400 mb-1">{title}</h3>
+      <div className="flex justify-between items-start">
+        <h3 className="text-sm font-medium text-slate-400 mb-1">{title}</h3>
+        {icon && <div className="text-indigo-400">{icon}</div>}
+      </div>
       
       <div className={cn(
         "flex items-center text-2xl font-bold mb-1",

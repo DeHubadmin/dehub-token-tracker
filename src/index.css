@@ -39,11 +39,11 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border font-exo;
   }
 
   body {
-    @apply bg-dehub-background text-dehub-foreground;
+    @apply bg-dehub-background text-dehub-foreground font-exo;
   }
 }
 

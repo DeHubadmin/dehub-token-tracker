@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchTokenInfo } from '@/services/tokenService';
@@ -6,7 +7,7 @@ import SupplyMetricCard from './SupplyMetricCard';
 import ChainSupplyCard from './ChainSupplyCard';
 import MarketDataCard from './MarketDataCard';
 import PriceChangeCard from './PriceChangeCard';
-import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock } from 'lucide-react';
+import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock, History } from 'lucide-react';
 
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
@@ -90,7 +91,7 @@ const TokenDashboard: React.FC = () => {
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <PriceChangeCard
           title="90d Change"
           percentage={tokenInfo?.priceChangePercentage90d || 0}
@@ -104,6 +105,14 @@ const TokenDashboard: React.FC = () => {
           timeframe="1 year"
           isLoading={isLoading}
           className="h-full"
+        />
+        <PriceChangeCard
+          title="All Time Change"
+          percentage={tokenInfo?.priceChangePercentageAllTime || 0}
+          timeframe="all time"
+          isLoading={isLoading}
+          className="h-full"
+          icon={<History size={20} />}
         />
       </div>
 

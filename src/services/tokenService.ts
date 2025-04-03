@@ -35,6 +35,7 @@ export interface TokenInfo {
   priceChangePercentage30d?: number;
   priceChangePercentage90d?: number;
   priceChangePercentage1y?: number;
+  priceChangePercentageAllTime?: number;
   high24h?: number;
   formattedHigh24h?: string;
   low24h?: number;
@@ -85,6 +86,7 @@ const MOCK_TOKEN_INFO: TokenInfo = {
   priceChangePercentage30d: -2.15,
   priceChangePercentage90d: 8.75,
   priceChangePercentage1y: -12.35,
+  priceChangePercentageAllTime: 125.50,
   high24h: 0.0125,
   formattedHigh24h: "$0.0125",
   low24h: 0.0115,

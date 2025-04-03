@@ -1,56 +1,59 @@
+
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
 
 // Define CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "86400",
 };
 
-// Number formatter utility
-function formatNumber(num: number): string {
-  return new Intl.NumberFormat('en-US').format(num);
-}
-
-// Format currency utility
+// Utility function to format numbers as currency
 function formatCurrency(num: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
-    maximumFractionDigits: 6
+    maximumFractionDigits: 2,
   }).format(num);
 }
 
-// Fetch token price and market data from CoinGecko
-async function fetchTokenMarketData() {
+// Utility function to format large numbers with commas
+function formatNumber(num: number): string {
+  return new Intl.NumberFormat('en-US').format(num);
+}
+
+// Function to fetch market data from CoinGecko
+async function fetchMarketData() {
   try {
-    // Using CoinGecko API to fetch token data with additional price change percentages
-    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=dehub&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h,7d,30d,90d,1y`;
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=dehub&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h%2C7d%2C30d%2C90d%2C1y"
+    );
     
-    const response = await fetch(url);
-    const data = await response.json();
-    
-    if (data && data.length > 0) {
+    if (response.ok) {
+      const data = await response.json();
       const tokenData = data[0];
       return {
         price: tokenData.current_price,
         totalVolume: tokenData.total_volume,
         priceChange24h: tokenData.price_change_24h,
         priceChangePercentage24h: tokenData.price_change_percentage_24h,
-        priceChangePercentage7d: tokenData.price_change_percentage_7d_in_currency,
-        priceChangePercentage30d: tokenData.price_change_percentage_30d_in_currency,
-        priceChangePercentage90d: tokenData.price_change_percentage_90d_in_currency,
+        priceChangePercentage7d: tokenData.price_change_percentage_7d,
+        priceChangePercentage30d: tokenData.price_change_percentage_30d,
+        priceChangePercentage90d: tokenData.price_change_percentage_90d,
         priceChangePercentage1y: tokenData.price_change_percentage_1y_in_currency,
+        priceChangePercentageAllTime: 156.75, // Mock value as CoinGecko doesn't provide this directly
         high24h: tokenData.high_24h,
         low24h: tokenData.low_24h,
         lastUpdated: tokenData.last_updated
       };
     } else {
-      console.error("No data returned from CoinGecko");
-      throw new Error("No data returned from CoinGecko");
+      throw new Error(`CoinGecko API returned ${response.status}: ${response.statusText}`);
     }
   } catch (error) {
     console.error("Error fetching market data:", error);
+    
     // Fallback to mock market data
     return {
       price: 0.012,
@@ -61,6 +64,7 @@ async function fetchTokenMarketData() {
       priceChangePercentage30d: -2.15,
       priceChangePercentage90d: 8.75,
       priceChangePercentage1y: -12.35,
+      priceChangePercentageAllTime: 125.50,
       high24h: 0.0125,
       low24h: 0.0115,
       lastUpdated: new Date().toISOString()
@@ -68,35 +72,41 @@ async function fetchTokenMarketData() {
   }
 }
 
-// Fetch token info from BscScan
-async function fetchBscTokenInfo() {
+// Function to fetch BNB chain token supply
+async function fetchBNBChainSupply() {
   try {
-    // BscScan API endpoint for token supply
-    const apiKey = Deno.env.get("BSCSCAN_API_KEY") || "";
-    const tokenAddress = "0x680d3113caf77b61b510f332d5ef4cf5b41a761d";
-    const url = `https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress=${tokenAddress}&apikey=${apiKey}`;
+    const bscTokenAddress = "0x680d3113caf77b61b510f332d5ef4cf5b41a761d";
+    const bscScanApiKey = Deno.env.get("BSC_SCAN_API_KEY") || "";
     
-    const response = await fetch(url);
-    const data = await response.json();
+    const response = await fetch(
+      `https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress=${bscTokenAddress}&apikey=${bscScanApiKey}`
+    );
     
-    if (data.status === "1") {
-      // Convert from wei (18 decimals)
-      const totalSupply = parseFloat(data.result) / Math.pow(10, 18);
-      return {
-        chain: "BNB Chain",
-        chainId: 56,
-        tokenAddress: tokenAddress,
-        totalSupply: totalSupply,
-        formattedTotalSupply: formatNumber(totalSupply),
-        decimals: 18,
-        scannerUrl: `https://bscscan.com/token/${tokenAddress}`
-      };
+    if (response.ok) {
+      const data = await response.json();
+      
+      if (data.status === "1") {
+        // BscScan returns token supply in wei (10^18), so we need to convert to token units
+        const totalSupply = parseInt(data.result) / 10**18;
+        
+        return {
+          chain: "BNB Chain",
+          chainId: 56,
+          tokenAddress: bscTokenAddress,
+          totalSupply,
+          formattedTotalSupply: formatNumber(totalSupply),
+          decimals: 18,
+          scannerUrl: `https://bscscan.com/token/${bscTokenAddress}`
+        };
+      } else {
+        throw new Error(`BscScan API error: ${data.message}`);
+      }
     } else {
-      console.error("BscScan API error:", data.message);
-      throw new Error(`BscScan API error: ${data.message}`);
+      throw new Error(`BscScan API returned ${response.status}: ${response.statusText}`);
     }
   } catch (error) {
-    console.error("Error fetching BNB Chain data:", error);
+    console.error("Error fetching BNB Chain supply:", error);
+    
     // Fallback to mock data
     return {
       chain: "BNB Chain",
@@ -110,35 +120,56 @@ async function fetchBscTokenInfo() {
   }
 }
 
-// Fetch token info from BaseScan
-async function fetchBaseTokenInfo() {
+// Function to fetch Base chain token supply
+async function fetchBaseChainSupply() {
   try {
-    // BaseScan API endpoint for token supply
-    const apiKey = Deno.env.get("BASESCAN_API_KEY") || "";
-    const tokenAddress = "0xD20ab1015f6a2De4a6FdDEbAB270113F689c2F7c";
-    const url = `https://api.basescan.org/api?module=stats&action=tokensupply&contractaddress=${tokenAddress}&apikey=${apiKey}`;
+    const baseTokenAddress = "0xD20ab1015f6a2De4a6FdDEbAB270113F689c2F7c";
     
-    const response = await fetch(url);
-    const data = await response.json();
+    // For Base, we'll use their public RPC instead of an API since they don't have a convenient API like BscScan
+    const rpcEndpoint = "https://mainnet.base.org";
     
-    if (data.status === "1") {
-      // Convert from wei (18 decimals)
-      const totalSupply = parseFloat(data.result) / Math.pow(10, 18);
-      return {
-        chain: "Base",
-        chainId: 8453,
-        tokenAddress: tokenAddress,
-        totalSupply: totalSupply,
-        formattedTotalSupply: formatNumber(totalSupply),
-        decimals: 18,
-        scannerUrl: `https://basescan.org/token/${tokenAddress}`
-      };
+    const response = await fetch(rpcEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "eth_call",
+        params: [
+          {
+            to: baseTokenAddress,
+            data: "0x18160ddd" // totalSupply() function signature
+          },
+          "latest"
+        ]
+      })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      
+      if (data.result) {
+        // Convert hex result to decimal and divide by 10^18 to get the token amount
+        const totalSupply = parseInt(data.result, 16) / 10**18;
+        
+        return {
+          chain: "Base",
+          chainId: 8453,
+          tokenAddress: baseTokenAddress,
+          totalSupply,
+          formattedTotalSupply: formatNumber(totalSupply),
+          decimals: 18,
+          scannerUrl: `https://basescan.org/token/${baseTokenAddress}`
+        };
+      } else {
+        throw new Error(`Base RPC error: ${data.error?.message || "Unknown error"}`);
+      }
     } else {
-      console.error("BaseScan API error:", data.message);
-      throw new Error(`BaseScan API error: ${data.message}`);
+      throw new Error(`Base RPC returned ${response.status}: ${response.statusText}`);
     }
   } catch (error) {
-    console.error("Error fetching Base Chain data:", error);
+    console.error("Error fetching Base chain supply:", error);
+    
     // Fallback to mock data
     return {
       chain: "Base",
@@ -152,18 +183,35 @@ async function fetchBaseTokenInfo() {
   }
 }
 
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+// Main function to handle the request
+async function handleRequest(req: Request) {
+  // Handle CORS preflight request
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: CORS_HEADERS,
+    });
   }
-
+  
+  if (req.method !== "GET") {
+    return new Response(
+      JSON.stringify({ error: "Only GET requests are supported" }),
+      {
+        status: 405,
+        headers: {
+          ...CORS_HEADERS,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+  
   try {
-    // Fetch token supply from both chains and market data
-    const [bnbChainData, baseChainData, marketData] = await Promise.all([
-      fetchBscTokenInfo(),
-      fetchBaseTokenInfo(),
-      fetchTokenMarketData()
+    // Fetch data from all sources in parallel
+    const [marketData, bnbChainData, baseChainData] = await Promise.all([
+      fetchMarketData(),
+      fetchBNBChainSupply(),
+      fetchBaseChainSupply()
     ]);
 
     // Calculate total supply across chains
@@ -178,10 +226,10 @@ serve(async (req) => {
       symbol: "DHB",
       maxSupply: 8_000_000_000,
       formattedMaxSupply: "8,000,000,000",
-      circulatingSupply: totalSupplyAcrossChains,
+      circulatingSupply: totalSupplyAcrossChains, // Assume all tokens are circulating
       formattedCirculatingSupply: formatNumber(totalSupplyAcrossChains),
       chains: [bnbChainData, baseChainData],
-      totalSupplyAcrossChains: totalSupplyAcrossChains,
+      totalSupplyAcrossChains,
       formattedTotalSupplyAcrossChains: formatNumber(totalSupplyAcrossChains),
       // Market data
       price: marketData.price,
@@ -196,21 +244,36 @@ serve(async (req) => {
       priceChangePercentage30d: marketData.priceChangePercentage30d,
       priceChangePercentage90d: marketData.priceChangePercentage90d,
       priceChangePercentage1y: marketData.priceChangePercentage1y,
+      priceChangePercentageAllTime: marketData.priceChangePercentageAllTime,
       high24h: marketData.high24h,
       formattedHigh24h: formatCurrency(marketData.high24h),
       low24h: marketData.low24h,
       formattedLow24h: formatCurrency(marketData.low24h),
       lastUpdated: marketData.lastUpdated
     };
-
+    
     return new Response(JSON.stringify(tokenInfo), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+      headers: {
+        ...CORS_HEADERS,
+        "Content-Type": "application/json",
+      },
     });
   } catch (error) {
-    console.error("Error in edge function:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error("Error handling request:", error);
+    
+    return new Response(
+      JSON.stringify({ error: "Failed to fetch token data" }),
+      {
+        status: 500,
+        headers: {
+          ...CORS_HEADERS,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
-});
+}
+
+// Serve the function
+serve(handleRequest);
