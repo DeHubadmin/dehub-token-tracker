@@ -62,6 +62,7 @@ export interface CombinedTokenData {
 
 export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
   try {
+    console.log("Fetching supply metrics from tokenSupplyAPI");
     const { data, error } = await supabase.functions.invoke('tokenSupplyAPI', {
       method: 'GET'
     });
@@ -72,6 +73,7 @@ export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
       return null;
     }
     
+    console.log("Supply metrics response:", data);
     return data as SupplyMetrics;
   } catch (error) {
     console.error("Failed to fetch supply metrics:", error);

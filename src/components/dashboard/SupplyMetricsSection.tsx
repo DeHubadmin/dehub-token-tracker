@@ -13,6 +13,8 @@ const SupplyMetricsSection: React.FC<SupplyMetricsSectionProps> = ({
   tokenInfo, 
   isLoading 
 }) => {
+  console.log("Supply metrics data:", tokenInfo); // Add logging to check data
+  
   return (
     <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">

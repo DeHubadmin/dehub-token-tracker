@@ -67,6 +67,9 @@ async function handleRequest(req: Request) {
       lastUpdated: tokenData.lastUpdated
     };
     
+    // Log the response we're about to send for debugging
+    console.log("Sending supply metrics response:", JSON.stringify(supplyMetrics));
+    
     return new Response(JSON.stringify(supplyMetrics), {
       status: 200,
       headers: {
