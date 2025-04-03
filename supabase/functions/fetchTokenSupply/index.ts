@@ -25,8 +25,8 @@ function formatCurrency(num: number): string {
 // Fetch token price and market data from CoinGecko
 async function fetchTokenMarketData() {
   try {
-    // Using CoinGecko API to fetch token data
-    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=dehub&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h,7d,30d`;
+    // Using CoinGecko API to fetch token data with additional price change percentages
+    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=dehub&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h,7d,30d,90d,1y`;
     
     const response = await fetch(url);
     const data = await response.json();
@@ -41,6 +41,8 @@ async function fetchTokenMarketData() {
         priceChangePercentage24h: tokenData.price_change_percentage_24h,
         priceChangePercentage7d: tokenData.price_change_percentage_7d_in_currency,
         priceChangePercentage30d: tokenData.price_change_percentage_30d_in_currency,
+        priceChangePercentage90d: tokenData.price_change_percentage_90d_in_currency,
+        priceChangePercentage1y: tokenData.price_change_percentage_1y_in_currency,
         high24h: tokenData.high_24h,
         low24h: tokenData.low_24h,
         circulatingSupply: tokenData.circulating_supply,
@@ -63,6 +65,8 @@ async function fetchTokenMarketData() {
       priceChangePercentage24h: 1.95,
       priceChangePercentage7d: 5.25,
       priceChangePercentage30d: -2.15,
+      priceChangePercentage90d: 8.75,
+      priceChangePercentage1y: -12.35,
       high24h: 0.0125,
       low24h: 0.0115,
       lastUpdated: new Date().toISOString()
@@ -193,6 +197,8 @@ serve(async (req) => {
       priceChangePercentage24h: marketData.priceChangePercentage24h,
       priceChangePercentage7d: marketData.priceChangePercentage7d,
       priceChangePercentage30d: marketData.priceChangePercentage30d,
+      priceChangePercentage90d: marketData.priceChangePercentage90d,
+      priceChangePercentage1y: marketData.priceChangePercentage1y,
       high24h: marketData.high24h,
       formattedHigh24h: formatCurrency(marketData.high24h),
       low24h: marketData.low24h,

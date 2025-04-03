@@ -44,7 +44,7 @@ const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
         "flex items-center text-2xl font-bold mb-1",
         isPositive ? "text-green-500" : "text-red-500"
       )}>
-        {isPositive ? <ArrowUpRight size={24} /> : <ArrowDownRight size={24} />}
+        {isPositive ? <ArrowUpRight size={24} className="text-green-500" /> : <ArrowDownRight size={24} className="text-red-500" />}
         <span>{Math.abs(percentage).toFixed(2)}%</span>
       </div>
       

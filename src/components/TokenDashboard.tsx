@@ -7,7 +7,7 @@ import SupplyMetricCard from './SupplyMetricCard';
 import ChainSupplyCard from './ChainSupplyCard';
 import MarketDataCard from './MarketDataCard';
 import PriceChangeCard from './PriceChangeCard';
-import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity } from 'lucide-react';
+import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock } from 'lucide-react';
 
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
@@ -73,6 +73,7 @@ const TokenDashboard: React.FC = () => {
           title="24h Change"
           percentage={tokenInfo?.priceChangePercentage24h || 0}
           value={tokenInfo?.priceChange24h || 0}
+          timeframe="24 hours"
           isLoading={isLoading}
         />
         <PriceChangeCard
@@ -86,6 +87,23 @@ const TokenDashboard: React.FC = () => {
           percentage={tokenInfo?.priceChangePercentage30d || 0}
           timeframe="30 days"
           isLoading={isLoading}
+        />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <PriceChangeCard
+          title="90d Change"
+          percentage={tokenInfo?.priceChangePercentage90d || 0}
+          timeframe="90 days"
+          isLoading={isLoading}
+          className="h-full"
+        />
+        <PriceChangeCard
+          title="1y Change"
+          percentage={tokenInfo?.priceChangePercentage1y || 0}
+          timeframe="1 year"
+          isLoading={isLoading}
+          className="h-full"
         />
       </div>
 
@@ -150,6 +168,14 @@ const TokenDashboard: React.FC = () => {
           })}
         </div>
       )}
+      
+      {/* Last Updated */}
+      <div className="mt-8 text-center">
+        <p className="text-sm text-slate-400 flex items-center justify-center gap-1">
+          <Clock size={14} className="text-slate-500" />
+          Last updated: {tokenInfo?.lastUpdated ? new Date(tokenInfo.lastUpdated).toLocaleString() : 'Unknown'}
+        </p>
+      </div>
     </div>
   );
 };

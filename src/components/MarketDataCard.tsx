@@ -37,7 +37,7 @@ const MarketDataCard: React.FC<MarketDataCardProps> = ({
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-sm font-medium text-slate-400 mb-1">{title}</h3>
-          <p className="text-2xl md:text-3xl font-bold text-white">{value}</p>
+          <p className="text-2xl md:text-3xl font-bold text-gradient">{value}</p>
           {description && (
             <p className="text-xs text-slate-400 mt-1">{description}</p>
           )}
