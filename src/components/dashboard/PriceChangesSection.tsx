@@ -72,7 +72,7 @@ const PriceChangesSection: React.FC<PriceChangesSectionProps> = ({
       {/* Long-term changes */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <PriceChangeCard
-          title="All Time Change"
+          title="From All Time Low"
           percentage={tokenInfo?.priceChangePercentageAllTime || 0}
           timeframe="all time"
           isLoading={isLoading}
