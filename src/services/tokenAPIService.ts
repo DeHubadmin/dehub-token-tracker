@@ -1,0 +1,83 @@
+
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+export interface SupplyMetrics {
+  totalSupply: {
+    value: number;
+    formatted: string;
+    description: string;
+  };
+  circulatingSupply: {
+    value: number;
+    formatted: string;
+    description: string;
+  };
+  maxSupply: {
+    value: number;
+    formatted: string;
+    description: string;
+  };
+  lastUpdated: string;
+}
+
+export interface ChainSupply {
+  name: string;
+  chainId: number;
+  tokenAddress: string;
+  supply: {
+    value: number;
+    formatted: string;
+    percentage: number;
+  };
+  scannerUrl: string;
+}
+
+export interface ChainBreakdown {
+  chains: ChainSupply[];
+  totalSupplyAcrossChains: {
+    value: number;
+    formatted: string;
+  };
+  lastUpdated: string;
+}
+
+export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke('tokenSupplyAPI', {
+      method: 'GET'
+    });
+    
+    if (error) {
+      console.error("Error invoking tokenSupplyAPI function:", error);
+      toast.error("Failed to fetch supply metrics");
+      return null;
+    }
+    
+    return data as SupplyMetrics;
+  } catch (error) {
+    console.error("Failed to fetch supply metrics:", error);
+    toast.error("Failed to fetch supply metrics");
+    return null;
+  }
+}
+
+export async function fetchChainBreakdown(): Promise<ChainBreakdown | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke('chainBreakdownAPI', {
+      method: 'GET'
+    });
+    
+    if (error) {
+      console.error("Error invoking chainBreakdownAPI function:", error);
+      toast.error("Failed to fetch chain breakdown");
+      return null;
+    }
+    
+    return data as ChainBreakdown;
+  } catch (error) {
+    console.error("Failed to fetch chain breakdown:", error);
+    toast.error("Failed to fetch chain breakdown");
+    return null;
+  }
+}

@@ -3,3 +3,9 @@ project_id = "wgmvohihwaffavfstmfr"
 
 [functions.fetchTokenSupply]
 verify_jwt = false
+
+[functions.tokenSupplyAPI]
+verify_jwt = false
+
+[functions.chainBreakdownAPI]
+verify_jwt = false
