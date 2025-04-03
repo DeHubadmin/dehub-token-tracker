@@ -5,7 +5,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-dehub-background to-black">
+    <div className="min-h-screen bg-gradient-to-b from-dehub-background to-black font-exo">
       <Suspense fallback={<LoadingSpinner />}>
         <TokenDashboard />
       </Suspense>

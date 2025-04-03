@@ -12,25 +12,17 @@ import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activit
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
     queryKey: ['tokenInfo'],
-    queryFn: fetchTokenInfo
+    queryFn: fetchTokenInfo,
+    retry: 2,
+    retryDelay: 1000
   });
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-500 mb-2">Error Loading Data</h2>
-          <p className="text-slate-400">
-            There was a problem fetching the token information. Please try again later.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // If there's an error or tokenInfo is null, we show loading state
+  const isLoadingOrError = isLoading || error || !tokenInfo;
 
   return (
     <div className="container px-4 py-8 mx-auto max-w-6xl">
-      <TokenHeader tokenInfo={tokenInfo} isLoading={isLoading} />
+      <TokenHeader tokenInfo={tokenInfo} isLoading={isLoadingOrError} />
 
       {/* Market Metrics */}
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
@@ -44,7 +36,7 @@ const TokenDashboard: React.FC = () => {
           value={tokenInfo?.formattedPrice || '$0.00'}
           description="Current token price in USD"
           icon={<DollarSign size={24} />}
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
         <MarketDataCard
           title="Market Cap"
@@ -52,14 +44,14 @@ const TokenDashboard: React.FC = () => {
           description="Price × Circulating Supply"
           tooltipContent="Calculated by multiplying the current price by the circulating supply"
           icon={<Activity size={24} />}
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
         <MarketDataCard
           title="24h Volume"
           value={tokenInfo?.formattedTotalVolume || '$0.00'}
           description="Trading volume in the last 24 hours"
           icon={<TrendingUp size={24} />}
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
       </div>
 
@@ -75,19 +67,19 @@ const TokenDashboard: React.FC = () => {
           percentage={tokenInfo?.priceChangePercentage24h || 0}
           value={tokenInfo?.priceChange24h || 0}
           timeframe="24 hours"
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
         <PriceChangeCard
           title="7d Change"
           percentage={tokenInfo?.priceChangePercentage7d || 0}
           timeframe="7 days"
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
         <PriceChangeCard
           title="30d Change"
           percentage={tokenInfo?.priceChangePercentage30d || 0}
           timeframe="30 days"
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
       </div>
       
@@ -96,21 +88,21 @@ const TokenDashboard: React.FC = () => {
           title="90d Change"
           percentage={tokenInfo?.priceChangePercentage90d || 0}
           timeframe="90 days"
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
           className="h-full"
         />
         <PriceChangeCard
           title="1y Change"
           percentage={tokenInfo?.priceChangePercentage1y || 0}
           timeframe="1 year"
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
           className="h-full"
         />
         <PriceChangeCard
           title="All Time Change"
           percentage={tokenInfo?.priceChangePercentageAllTime || 0}
           timeframe="all time"
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
           className="h-full"
           icon={<History size={20} />}
         />
@@ -128,21 +120,21 @@ const TokenDashboard: React.FC = () => {
           value={tokenInfo?.formattedTotalSupplyAcrossChains || '0'}
           description="Total tokens across all supported chains"
           icon={<Coins size={24} />}
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
         <SupplyMetricCard
           title="Circulating Supply"
           value={tokenInfo?.formattedCirculatingSupply || '0'}
           description="Tokens available in the market"
           icon={<BarChart size={24} />}
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
         <SupplyMetricCard
           title="Maximum Supply"
           value={tokenInfo?.formattedMaxSupply || '0'}
           description="Maximum possible token supply"
           icon={<Trophy size={24} />}
-          isLoading={isLoading}
+          isLoading={isLoadingOrError}
         />
       </div>
 
@@ -152,20 +144,22 @@ const TokenDashboard: React.FC = () => {
         Chain Breakdown
       </h2>
       
-      {isLoading ? (
+      {isLoadingOrError || !tokenInfo?.chains ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
-            <div key={i} className="dehub-card p-6 animate-pulse">
-              <div className="h-5 bg-slate-700 rounded w-1/3 mb-4"></div>
-              <div className="h-2 bg-slate-700 rounded-full w-full mb-6"></div>
-              <div className="h-8 bg-slate-700 rounded w-2/3 mb-2"></div>
-              <div className="h-4 bg-slate-700 rounded w-1/2"></div>
-            </div>
+            <Card key={i} className="dehub-card p-6">
+              <div className="space-y-4">
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-2 w-full" />
+                <Skeleton className="h-10 w-2/3" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            </Card>
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {tokenInfo?.chains.map((chain) => {
+          {tokenInfo.chains.map((chain) => {
             const percentage = (chain.totalSupply / (tokenInfo?.totalSupplyAcrossChains || 1)) * 100;
             return (
               <ChainSupplyCard 
@@ -182,7 +176,7 @@ const TokenDashboard: React.FC = () => {
       <div className="mt-8 text-center">
         <p className="text-sm text-slate-400 flex items-center justify-center gap-1">
           <Clock size={14} className="text-slate-500" />
-          Last updated: {tokenInfo?.lastUpdated ? new Date(tokenInfo.lastUpdated).toLocaleString() : 'Unknown'}
+          Last updated: {isLoadingOrError ? 'Loading...' : (tokenInfo?.lastUpdated ? new Date(tokenInfo.lastUpdated).toLocaleString() : 'Unknown')}
         </p>
       </div>
     </div>

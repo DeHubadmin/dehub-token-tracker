@@ -3,6 +3,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface PriceChangeCardProps {
   title: string;
@@ -29,10 +30,11 @@ const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
   if (isLoading) {
     return (
       <Card className={cn("dehub-card p-6", className)}>
-        <div className="animate-pulse">
-          <div className="h-5 bg-slate-700 rounded w-1/3 mb-4"></div>
-          <div className="h-8 bg-slate-700 rounded w-1/2 mb-2"></div>
-          <div className="h-4 bg-slate-700 rounded w-1/4"></div>
+        <div className="space-y-3">
+          <Skeleton className="h-5 w-1/3" />
+          <Skeleton className="h-8 w-1/2" />
+          {value !== undefined && <Skeleton className="h-4 w-1/4" />}
+          {timeframe && <Skeleton className="h-4 w-2/5" />}
         </div>
       </Card>
     );
