@@ -9,3 +9,6 @@ verify_jwt = false
 
 [functions.chainBreakdownAPI]
 verify_jwt = false
+
+[functions.combinedTokenAPI]
+verify_jwt = false

@@ -42,6 +42,24 @@ export interface ChainBreakdown {
   lastUpdated: string;
 }
 
+export interface CombinedTokenData {
+  name: string;
+  symbol: string;
+  supplyMetrics: SupplyMetrics;
+  chainBreakdown: ChainBreakdown;
+  marketData: {
+    price: number;
+    formattedPrice: string;
+    marketCap: number;
+    formattedMarketCap: string;
+    totalVolume: number;
+    formattedTotalVolume: string;
+    priceChangePercentage24h: number;
+    priceChangePercentage7d: number;
+    lastUpdated: string;
+  };
+}
+
 export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
   try {
     const { data, error } = await supabase.functions.invoke('tokenSupplyAPI', {
@@ -78,6 +96,26 @@ export async function fetchChainBreakdown(): Promise<ChainBreakdown | null> {
   } catch (error) {
     console.error("Failed to fetch chain breakdown:", error);
     toast.error("Failed to fetch chain breakdown");
+    return null;
+  }
+}
+
+export async function fetchCombinedTokenData(): Promise<CombinedTokenData | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke('combinedTokenAPI', {
+      method: 'GET'
+    });
+    
+    if (error) {
+      console.error("Error invoking combinedTokenAPI function:", error);
+      toast.error("Failed to fetch token data");
+      return null;
+    }
+    
+    return data as CombinedTokenData;
+  } catch (error) {
+    console.error("Failed to fetch combined token data:", error);
+    toast.error("Failed to fetch token data");
     return null;
   }
 }
