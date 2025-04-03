@@ -33,8 +33,8 @@ async function handleRequest(req: Request) {
   }
   
   try {
-    // Call the fetchTokenSupply endpoint to get all data
-    const response = await fetch("https://wgmvohihwaffavfstmfr.supabase.co/functions/v1/fetchTokenSupply", {
+    // Call the fetchtokensupply endpoint to get all data (note the lowercase name)
+    const response = await fetch("https://wgmvohihwaffavfstmfr.supabase.co/functions/v1/fetchtokensupply", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

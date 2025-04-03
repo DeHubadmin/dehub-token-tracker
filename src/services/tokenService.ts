@@ -52,13 +52,13 @@ export interface TokenInfo {
 
 export async function fetchTokenInfo(): Promise<TokenInfo | null> {
   try {
-    // Call the Supabase Edge Function with GET method
-    const { data, error } = await supabase.functions.invoke('fetchTokenSupply', {
+    // Call the Supabase Edge Function with GET method - note the lowercase function name
+    const { data, error } = await supabase.functions.invoke('fetchtokensupply', {
       method: 'GET'
     });
     
     if (error) {
-      console.error("Error invoking fetchTokenSupply function:", error);
+      console.error("Error invoking fetchtokensupply function:", error);
       toast.error("Failed to fetch live token data");
       return null;
     }

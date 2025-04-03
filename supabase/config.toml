@@ -1,7 +1,7 @@
 
 project_id = "wgmvohihwaffavfstmfr"
 
-[functions.fetchTokenSupply]
+[functions.fetchtokensupply]
 verify_jwt = false
 
 [functions.tokenSupplyAPI]
