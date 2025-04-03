@@ -5,7 +5,9 @@ import { fetchTokenInfo } from '@/services/tokenService';
 import TokenHeader from './TokenHeader';
 import SupplyMetricCard from './SupplyMetricCard';
 import ChainSupplyCard from './ChainSupplyCard';
-import { Coins, Trophy, BarChart, ArrowUpCircle } from 'lucide-react';
+import MarketDataCard from './MarketDataCard';
+import PriceChangeCard from './PriceChangeCard';
+import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity } from 'lucide-react';
 
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
@@ -30,7 +32,69 @@ const TokenDashboard: React.FC = () => {
     <div className="container px-4 py-8 mx-auto max-w-6xl">
       <TokenHeader tokenInfo={tokenInfo} isLoading={isLoading} />
 
+      {/* Market Metrics */}
+      <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+        <DollarSign size={20} className="text-indigo-400" />
+        Market Data
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <MarketDataCard
+          title="Current Price"
+          value={tokenInfo?.formattedPrice || '$0.00'}
+          description="Current token price in USD"
+          icon={<DollarSign size={24} />}
+          isLoading={isLoading}
+        />
+        <MarketDataCard
+          title="Market Cap"
+          value={tokenInfo?.formattedMarketCap || '$0.00'}
+          description="Total market capitalization"
+          icon={<Activity size={24} />}
+          isLoading={isLoading}
+        />
+        <MarketDataCard
+          title="24h Volume"
+          value={tokenInfo?.formattedTotalVolume || '$0.00'}
+          description="Trading volume in the last 24 hours"
+          icon={<TrendingUp size={24} />}
+          isLoading={isLoading}
+        />
+      </div>
+
+      {/* Price Changes */}
+      <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+        <TrendingUp size={20} className="text-indigo-400" />
+        Price Changes
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <PriceChangeCard
+          title="24h Change"
+          percentage={tokenInfo?.priceChangePercentage24h || 0}
+          value={tokenInfo?.priceChange24h || 0}
+          isLoading={isLoading}
+        />
+        <PriceChangeCard
+          title="7d Change"
+          percentage={tokenInfo?.priceChangePercentage7d || 0}
+          timeframe="7 days"
+          isLoading={isLoading}
+        />
+        <PriceChangeCard
+          title="30d Change"
+          percentage={tokenInfo?.priceChangePercentage30d || 0}
+          timeframe="30 days"
+          isLoading={isLoading}
+        />
+      </div>
+
       {/* Supply Metrics */}
+      <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+        <Coins size={20} className="text-indigo-400" />
+        Supply Metrics
+      </h2>
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <SupplyMetricCard
           title="Total Supply (All Chains)"

@@ -22,6 +22,22 @@ export interface TokenInfo {
   chains: TokenSupply[];
   totalSupplyAcrossChains: number;
   formattedTotalSupplyAcrossChains: string;
+  // Market data
+  price?: number;
+  formattedPrice?: string;
+  marketCap?: number;
+  formattedMarketCap?: string;
+  totalVolume?: number;
+  formattedTotalVolume?: string;
+  priceChange24h?: number;
+  priceChangePercentage24h?: number;
+  priceChangePercentage7d?: number;
+  priceChangePercentage30d?: number;
+  high24h?: number;
+  formattedHigh24h?: string;
+  low24h?: number;
+  formattedLow24h?: string;
+  lastUpdated?: string;
 }
 
 // Fallback mock data in case the API fails
@@ -53,8 +69,24 @@ const MOCK_TOKEN_INFO: TokenInfo = {
     }
   ],
   totalSupplyAcrossChains: 8_000_000_000,
-  formattedTotalSupplyAcrossChains: "8,000,000,000"
-};
+  formattedTotalSupplyAcrossChains: "8,000,000,000",
+  // Mock market data
+  price: 0.012,
+  formattedPrice: "$0.012",
+  marketCap: 95320353,
+  formattedMarketCap: "$95,320,353.00",
+  totalVolume: 2345678,
+  formattedTotalVolume: "$2,345,678.00",
+  priceChange24h: 0.00023,
+  priceChangePercentage24h: 1.95,
+  priceChangePercentage7d: 5.25,
+  priceChangePercentage30d: -2.15,
+  high24h: 0.0125,
+  formattedHigh24h: "$0.0125",
+  low24h: 0.0115,
+  formattedLow24h: "$0.0115",
+  lastUpdated: new Date().toISOString()
+}
 
 export async function fetchTokenInfo(): Promise<TokenInfo> {
   try {
