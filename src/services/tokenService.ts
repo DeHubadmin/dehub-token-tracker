@@ -30,12 +30,16 @@ export interface TokenInfo {
   totalVolume?: number;
   formattedTotalVolume?: string;
   priceChange24h?: number;
+  priceChangePercentage1h?: number;
   priceChangePercentage24h?: number;
   priceChangePercentage7d?: number;
+  priceChangePercentage14d?: number;
   priceChangePercentage30d?: number;
-  priceChangePercentage90d?: number;
   priceChangePercentage1y?: number;
   priceChangePercentageAllTime?: number;
+  priceChangePercentageFromATH?: number;
+  allTimeHigh?: number;
+  formattedAllTimeHigh?: string;
   high24h?: number;
   formattedHigh24h?: string;
   low24h?: number;

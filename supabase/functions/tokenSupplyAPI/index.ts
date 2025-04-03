@@ -9,7 +9,7 @@ const CORS_HEADERS = {
   "Access-Control-Max-Age": "86400",
 };
 
-// Handle requests
+// Function to handle the request
 async function handleRequest(req: Request) {
   // Handle CORS preflight request
   if (req.method === "OPTIONS") {
@@ -33,26 +33,21 @@ async function handleRequest(req: Request) {
   }
   
   try {
-    // Call the main fetchTokenSupply function to avoid duplicating logic
-    const url = new URL(req.url);
-    const targetFunction = "fetchTokenSupply";
-    
-    // Forward the request to the fetchTokenSupply function
-    const response = await fetch(
-      `${url.protocol}//${url.host}/functions/v1/${targetFunction}`,
-      {
-        method: "GET",
-        headers: req.headers
-      }
-    );
+    // Call the fetchTokenSupply endpoint to get all data
+    const response = await fetch("https://wgmvohihwaffavfstmfr.supabase.co/functions/v1/fetchTokenSupply", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     
     if (!response.ok) {
-      throw new Error(`Error fetching token data: ${response.status} ${response.statusText}`);
+      throw new Error(`Fetch token supply failed: ${response.status} ${response.statusText}`);
     }
     
     const tokenData = await response.json();
     
-    // Extract only the supply metrics data for this API
+    // Format the supply metrics response
     const supplyMetrics = {
       totalSupply: {
         value: tokenData.totalSupplyAcrossChains,
@@ -83,7 +78,7 @@ async function handleRequest(req: Request) {
     console.error("Error handling request:", error);
     
     return new Response(
-      JSON.stringify({ error: error.message || "Failed to fetch supply metrics" }),
+      JSON.stringify({ error: error.message || "Failed to fetch token data" }),
       {
         status: 500,
         headers: {

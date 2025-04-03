@@ -19,13 +19,13 @@ function formatCurrency(num: number): string {
   }).format(num);
 }
 
-// Utility function to format price with 4 decimal places
+// Utility function to format price with 5 decimal places
 function formatPrice(num: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 4,
-    maximumFractionDigits: 4,
+    minimumFractionDigits: 5,
+    maximumFractionDigits: 5,
   }).format(num);
 }
 
@@ -37,7 +37,7 @@ function formatNumber(num: number): string {
 // Function to fetch market data from CoinGecko
 async function fetchMarketData() {
   const response = await fetch(
-    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=dehub&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=24h%2C7d%2C30d%2C90d%2C1y"
+    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=dehub&order=market_cap_desc&per_page=1&page=1&sparkline=false&price_change_percentage=1h,24h,7d,14d,30d,1y"
   );
   
   if (!response.ok) {
@@ -51,16 +51,24 @@ async function fetchMarketData() {
     throw new Error("No token data returned from CoinGecko");
   }
   
+  // Calculate all-time high change
+  const allTimeHigh = 0.00112; // Replace with actual ATH value
+  const changeFromATH = ((tokenData.current_price - allTimeHigh) / allTimeHigh) * 100;
+  
   return {
     price: tokenData.current_price,
     totalVolume: tokenData.total_volume,
     priceChange24h: tokenData.price_change_24h,
+    priceChangePercentage1h: tokenData.price_change_percentage_1h_in_currency,
     priceChangePercentage24h: tokenData.price_change_percentage_24h,
-    priceChangePercentage7d: tokenData.price_change_percentage_7d,
-    priceChangePercentage30d: tokenData.price_change_percentage_30d,
-    priceChangePercentage90d: tokenData.price_change_percentage_90d,
+    priceChangePercentage7d: tokenData.price_change_percentage_7d_in_currency,
+    priceChangePercentage14d: tokenData.price_change_percentage_14d_in_currency,
+    priceChangePercentage30d: tokenData.price_change_percentage_30d_in_currency,
     priceChangePercentage1y: tokenData.price_change_percentage_1y_in_currency,
     priceChangePercentageAllTime: 156.75, // Hard to get from API, keeping this hard-coded
+    priceChangePercentageFromATH: changeFromATH,
+    allTimeHigh: allTimeHigh,
+    formattedAllTimeHigh: formatPrice(allTimeHigh),
     high24h: tokenData.high_24h,
     low24h: tokenData.low_24h,
     lastUpdated: tokenData.last_updated
@@ -202,22 +210,26 @@ async function handleRequest(req: Request) {
       formattedTotalSupplyAcrossChains: formatNumber(totalSupplyAcrossChains),
       // Market data
       price: marketData.price,
-      formattedPrice: formatPrice(marketData.price), // Using the new 4 decimal price formatter
+      formattedPrice: formatPrice(marketData.price), // Using the new 5 decimal price formatter
       marketCap: calculatedMarketCap,
       formattedMarketCap: formatCurrency(calculatedMarketCap),
       totalVolume: marketData.totalVolume,
       formattedTotalVolume: formatCurrency(marketData.totalVolume),
       priceChange24h: marketData.priceChange24h,
+      priceChangePercentage1h: marketData.priceChangePercentage1h,
       priceChangePercentage24h: marketData.priceChangePercentage24h,
       priceChangePercentage7d: marketData.priceChangePercentage7d,
+      priceChangePercentage14d: marketData.priceChangePercentage14d,
       priceChangePercentage30d: marketData.priceChangePercentage30d,
-      priceChangePercentage90d: marketData.priceChangePercentage90d,
       priceChangePercentage1y: marketData.priceChangePercentage1y,
       priceChangePercentageAllTime: marketData.priceChangePercentageAllTime,
+      priceChangePercentageFromATH: marketData.priceChangePercentageFromATH,
+      allTimeHigh: marketData.allTimeHigh,
+      formattedAllTimeHigh: marketData.formattedAllTimeHigh,
       high24h: marketData.high24h,
-      formattedHigh24h: formatPrice(marketData.high24h), // Using the new 4 decimal price formatter
+      formattedHigh24h: formatPrice(marketData.high24h), // Using the new 5 decimal price formatter
       low24h: marketData.low24h,
-      formattedLow24h: formatPrice(marketData.low24h), // Using the new 4 decimal price formatter
+      formattedLow24h: formatPrice(marketData.low24h), // Using the new 5 decimal price formatter
       lastUpdated: marketData.lastUpdated
     };
     

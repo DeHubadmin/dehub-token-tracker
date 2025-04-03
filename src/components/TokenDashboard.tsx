@@ -9,7 +9,7 @@ import MarketDataCard from './MarketDataCard';
 import PriceChangeCard from './PriceChangeCard';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock, History } from 'lucide-react';
+import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock, History, Clock1 } from 'lucide-react';
 
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
@@ -35,7 +35,7 @@ const TokenDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <MarketDataCard
           title="Current Price"
-          value={tokenInfo?.formattedPrice || '$0.00'}
+          value={tokenInfo?.formattedPrice || '$0.00000'}
           description="Current token price in USD"
           icon={<DollarSign size={24} />}
           isLoading={isLoadingOrError}
@@ -65,6 +65,13 @@ const TokenDashboard: React.FC = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <PriceChangeCard
+          title="1h Change"
+          percentage={tokenInfo?.priceChangePercentage1h || 0}
+          timeframe="1 hour"
+          isLoading={isLoadingOrError}
+          icon={<Clock1 size={20} />}
+        />
+        <PriceChangeCard
           title="24h Change"
           percentage={tokenInfo?.priceChangePercentage24h || 0}
           value={tokenInfo?.priceChange24h || 0}
@@ -77,19 +84,20 @@ const TokenDashboard: React.FC = () => {
           timeframe="7 days"
           isLoading={isLoadingOrError}
         />
-        <PriceChangeCard
-          title="30d Change"
-          percentage={tokenInfo?.priceChangePercentage30d || 0}
-          timeframe="30 days"
-          isLoading={isLoadingOrError}
-        />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <PriceChangeCard
-          title="90d Change"
-          percentage={tokenInfo?.priceChangePercentage90d || 0}
-          timeframe="90 days"
+          title="14d Change"
+          percentage={tokenInfo?.priceChangePercentage14d || 0}
+          timeframe="14 days"
+          isLoading={isLoadingOrError}
+          className="h-full"
+        />
+        <PriceChangeCard
+          title="30d Change"
+          percentage={tokenInfo?.priceChangePercentage30d || 0}
+          timeframe="30 days"
           isLoading={isLoadingOrError}
           className="h-full"
         />
@@ -100,6 +108,9 @@ const TokenDashboard: React.FC = () => {
           isLoading={isLoadingOrError}
           className="h-full"
         />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <PriceChangeCard
           title="All Time Change"
           percentage={tokenInfo?.priceChangePercentageAllTime || 0}
@@ -107,6 +118,14 @@ const TokenDashboard: React.FC = () => {
           isLoading={isLoadingOrError}
           className="h-full"
           icon={<History size={20} />}
+        />
+        <PriceChangeCard
+          title="From All Time High"
+          percentage={tokenInfo?.priceChangePercentageFromATH || 0}
+          timeframe={`ATH: ${tokenInfo?.formattedAllTimeHigh || '$0.00000'}`}
+          isLoading={isLoadingOrError}
+          className="h-full"
+          icon={<Trophy size={20} />}
         />
       </div>
 
