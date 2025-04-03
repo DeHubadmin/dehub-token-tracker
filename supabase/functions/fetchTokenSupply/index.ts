@@ -51,8 +51,9 @@ async function fetchMarketData() {
     throw new Error("No token data returned from CoinGecko");
   }
   
-  // Calculate all-time high change
-  const allTimeHigh = 0.00112; // Replace with actual ATH value
+  // Update with correct all-time high value
+  const allTimeHigh = 0.065;
+  const allTimeLow = 0.00008;
   const changeFromATH = ((tokenData.current_price - allTimeHigh) / allTimeHigh) * 100;
   
   return {
@@ -69,6 +70,8 @@ async function fetchMarketData() {
     priceChangePercentageFromATH: changeFromATH,
     allTimeHigh: allTimeHigh,
     formattedAllTimeHigh: formatPrice(allTimeHigh),
+    allTimeLow: allTimeLow,
+    formattedAllTimeLow: formatPrice(allTimeLow),
     high24h: tokenData.high_24h,
     low24h: tokenData.low_24h,
     lastUpdated: tokenData.last_updated
@@ -210,7 +213,7 @@ async function handleRequest(req: Request) {
       formattedTotalSupplyAcrossChains: formatNumber(totalSupplyAcrossChains),
       // Market data
       price: marketData.price,
-      formattedPrice: formatPrice(marketData.price), // Using the new 5 decimal price formatter
+      formattedPrice: formatPrice(marketData.price),
       marketCap: calculatedMarketCap,
       formattedMarketCap: formatCurrency(calculatedMarketCap),
       totalVolume: marketData.totalVolume,
@@ -226,10 +229,12 @@ async function handleRequest(req: Request) {
       priceChangePercentageFromATH: marketData.priceChangePercentageFromATH,
       allTimeHigh: marketData.allTimeHigh,
       formattedAllTimeHigh: marketData.formattedAllTimeHigh,
+      allTimeLow: marketData.allTimeLow,
+      formattedAllTimeLow: marketData.formattedAllTimeLow,
       high24h: marketData.high24h,
-      formattedHigh24h: formatPrice(marketData.high24h), // Using the new 5 decimal price formatter
+      formattedHigh24h: formatPrice(marketData.high24h),
       low24h: marketData.low24h,
-      formattedLow24h: formatPrice(marketData.low24h), // Using the new 5 decimal price formatter
+      formattedLow24h: formatPrice(marketData.low24h),
       lastUpdated: marketData.lastUpdated
     };
     

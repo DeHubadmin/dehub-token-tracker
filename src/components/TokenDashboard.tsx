@@ -9,7 +9,7 @@ import MarketDataCard from './MarketDataCard';
 import PriceChangeCard from './PriceChangeCard';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock, History, Clock1 } from 'lucide-react';
+import { Coins, Trophy, BarChart, ArrowUpCircle, DollarSign, TrendingUp, Activity, Clock, History, Clock1, ArrowDownCircle } from 'lucide-react';
 
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
@@ -126,6 +126,18 @@ const TokenDashboard: React.FC = () => {
           isLoading={isLoadingOrError}
           className="h-full"
           icon={<Trophy size={20} />}
+        />
+      </div>
+
+      {/* All-Time Low */}
+      <div className="grid grid-cols-1 gap-6 mb-8">
+        <PriceChangeCard
+          title="All Time Low"
+          percentage={0} // Not a price change, so we'll show 0
+          timeframe={`ATL: ${tokenInfo?.formattedAllTimeLow || '$0.00000'}`}
+          isLoading={isLoadingOrError}
+          className="h-full"
+          icon={<ArrowDownCircle size={20} />}
         />
       </div>
 
