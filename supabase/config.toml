@@ -4,11 +4,11 @@ project_id = "wgmvohihwaffavfstmfr"
 [functions.fetchtokensupply]
 verify_jwt = false
 
-[functions.tokenSupplyAPI]
+[functions.tokensupplyapi]
 verify_jwt = false
 
-[functions.chainBreakdownAPI]
+[functions.chainbreakdownapi]
 verify_jwt = false
 
-[functions.combinedTokenAPI]
+[functions.combinedtokenapi]
 verify_jwt = false

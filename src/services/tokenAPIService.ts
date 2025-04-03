@@ -62,13 +62,13 @@ export interface CombinedTokenData {
 
 export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
   try {
-    console.log("Fetching supply metrics from tokenSupplyAPI");
-    const { data, error } = await supabase.functions.invoke('tokenSupplyAPI', {
+    console.log("Fetching supply metrics from tokensupplyapi");
+    const { data, error } = await supabase.functions.invoke('tokensupplyapi', {
       method: 'GET'
     });
     
     if (error) {
-      console.error("Error invoking tokenSupplyAPI function:", error);
+      console.error("Error invoking tokensupplyapi function:", error);
       toast.error("Failed to fetch supply metrics");
       return null;
     }
@@ -84,12 +84,12 @@ export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
 
 export async function fetchChainBreakdown(): Promise<ChainBreakdown | null> {
   try {
-    const { data, error } = await supabase.functions.invoke('chainBreakdownAPI', {
+    const { data, error } = await supabase.functions.invoke('chainbreakdownapi', {
       method: 'GET'
     });
     
     if (error) {
-      console.error("Error invoking chainBreakdownAPI function:", error);
+      console.error("Error invoking chainbreakdownapi function:", error);
       toast.error("Failed to fetch chain breakdown");
       return null;
     }
@@ -104,12 +104,12 @@ export async function fetchChainBreakdown(): Promise<ChainBreakdown | null> {
 
 export async function fetchCombinedTokenData(): Promise<CombinedTokenData | null> {
   try {
-    const { data, error } = await supabase.functions.invoke('combinedTokenAPI', {
+    const { data, error } = await supabase.functions.invoke('combinedtokenapi', {
       method: 'GET'
     });
     
     if (error) {
-      console.error("Error invoking combinedTokenAPI function:", error);
+      console.error("Error invoking combinedtokenapi function:", error);
       toast.error("Failed to fetch token data");
       return null;
     }
