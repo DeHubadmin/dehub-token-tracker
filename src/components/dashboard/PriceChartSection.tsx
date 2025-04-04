@@ -31,7 +31,7 @@ const formatXAxis = (tickItem: number) => {
 };
 
 const formatYAxis = (tickItem: number) => {
-  return tickItem.toFixed(2);
+  return tickItem.toFixed(5); // Changed from 2 to 5 decimal places
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       return (
         <div className="bg-gray-800 text-white p-2 rounded-md">
           <p className="label">{format(new Date(label), "MMM dd, yyyy")}</p>
-          <p className="intro">{`Price: $${payload[0].value.toFixed(2)}`}</p>
+          <p className="intro">{`Price: $${payload[0].value.toFixed(5)}`}</p> {/* Changed from 2 to 5 decimal places */}
         </div>
       );
     } catch (e) {
