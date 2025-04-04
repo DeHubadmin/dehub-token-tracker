@@ -13,7 +13,7 @@ export interface HistoricalPriceData {
  * @param days Number of days of historical data to fetch
  * @returns Historical price data or null if error
  */
-export async function fetchHistoricalPriceData(days: number = 60): Promise<HistoricalPriceData | null> {
+export async function fetchHistoricalPriceData(days: number = 180): Promise<HistoricalPriceData | null> {
   try {
     const { data, error } = await supabase.functions.invoke('historical-price', {
       method: 'POST',

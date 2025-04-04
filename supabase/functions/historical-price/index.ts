@@ -25,7 +25,7 @@ async function handleRequest(req: Request) {
   
   try {
     // Parse request body
-    let days = 60; // Default to 60 days
+    let days = 180; // Default to 180 days
     
     if (req.method === "POST") {
       try {

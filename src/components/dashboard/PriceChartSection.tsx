@@ -16,10 +16,10 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   tokenInfo,
   isLoading
 }) => {
-  // Fetch 60 days of historical price data
+  // Fetch 180 days of historical price data
   const { data: historicalData, isLoading: isHistoricalLoading } = useQuery({
-    queryKey: ['historicalPriceData', 60],
-    queryFn: () => fetchHistoricalPriceData(60),
+    queryKey: ['historicalPriceData', 180],
+    queryFn: () => fetchHistoricalPriceData(180),
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: !isLoading && !!tokenInfo
   });
@@ -82,10 +82,10 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
     <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
         <TrendingUp size={20} className="text-blue-400" />
-        Price Chart (60 Days)
+        Price Chart (180 Days)
       </h2>
       
-      <div className="p-4 bg-[#0D1B2A] rounded-lg mb-8">
+      <div className="p-4 bg-[#0D1B2A] rounded-lg mb-8 w-full">
         <div className="mb-4 flex justify-between items-center">
           <div>
             <span className="text-lg font-bold text-white">
@@ -97,14 +97,14 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
             </span>
           </div>
           <div className="text-sm text-slate-400">
-            Last 60 days
+            Last 180 days
           </div>
         </div>
         
-        <div className="h-[300px] w-full">
+        <div className="h-[350px] w-full">
           <ChartContainer
             config={chartConfig}
-            className="h-full"
+            className="h-full w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
@@ -116,7 +116,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
                   dataKey="date"
                   tick={{ fill: '#9ca3af' }}
                   axisLine={{ stroke: '#1E3A5F' }}
-                  minTickGap={30}
+                  minTickGap={40}
                 />
                 <YAxis 
                   tickFormatter={formatPrice}
