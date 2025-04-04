@@ -107,8 +107,8 @@ const RecentTransfersSection: React.FC<RecentTransfersSectionProps> = ({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {displayedTransfers.map((tx) => (
-                  <TableRow key={tx.txHash} className="border-b border-white/10">
+                {displayedTransfers.map((tx, index) => (
+                  <TableRow key={`${tx.txHash}-${tx.chain}-${index}`} className="border-b border-white/10">
                     <TableCell className="text-white">
                       <a 
                         href={tx.scannerUrl} 

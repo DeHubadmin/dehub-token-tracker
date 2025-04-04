@@ -1,14 +1,15 @@
 
 import React from 'react';
 import { CombinedTokenData } from '@/services/tokenAPIService';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, TrendingUp, TrendingDown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import MarketDataCard from '../MarketDataCard';
+
 interface HolderStatsSectionProps {
   tokenInfo: CombinedTokenData | undefined;
   isLoading: boolean;
 }
+
 const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
   tokenInfo,
   isLoading
@@ -24,10 +25,12 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
         </div>
       </div>;
   }
+  
   const holderStats = tokenInfo?.holderData?.holderStats;
   if (!holderStats) {
     return null;
   }
+  
   return <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2 my-[40px] py-0">
         <Users size={20} className="text-indigo-400" />
@@ -47,7 +50,7 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           title="24h Change" 
           value={holderStats.changes.day.formatted} 
           description="From previous period" 
-          icon={holderStats.changes.day.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />} 
+          icon={holderStats.changes.day.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
           className={holderStats.changes.day.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
         />
         
@@ -55,7 +58,7 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           title="7d Change" 
           value={holderStats.changes.week.formatted} 
           description="From previous period" 
-          icon={holderStats.changes.week.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />} 
+          icon={holderStats.changes.week.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
           className={holderStats.changes.week.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
         />
         
@@ -63,7 +66,7 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           title="30d Change" 
           value={holderStats.changes.month.formatted} 
           description="From previous period" 
-          icon={holderStats.changes.month.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />} 
+          icon={holderStats.changes.month.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
           className={holderStats.changes.month.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
         />
         
@@ -71,10 +74,11 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           title="1y Change" 
           value={holderStats.changes.year.formatted} 
           description="From previous period" 
-          icon={holderStats.changes.year.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />} 
+          icon={holderStats.changes.year.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
           className={holderStats.changes.year.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
         />
       </div>
     </>;
 };
+
 export default HolderStatsSection;
