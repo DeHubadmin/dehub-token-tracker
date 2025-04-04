@@ -16,10 +16,10 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   tokenInfo,
   isLoading
 }) => {
-  // Fetch 180 days of historical price data
+  // Fetch 365 days of historical price data
   const { data: historicalData, isLoading: isHistoricalLoading } = useQuery({
-    queryKey: ['historicalPriceData', 180],
-    queryFn: () => fetchHistoricalPriceData(180),
+    queryKey: ['historicalPriceData', 365],
+    queryFn: () => fetchHistoricalPriceData(365),
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: !isLoading && !!tokenInfo
   });
@@ -82,7 +82,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
     <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
         <TrendingUp size={20} className="text-blue-400" />
-        Price Chart (180 Days)
+        Price Chart (1 Year)
       </h2>
       
       <div className="p-4 bg-[#0D1B2A] rounded-lg mb-8 w-full">
@@ -97,7 +97,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
             </span>
           </div>
           <div className="text-sm text-slate-400">
-            Last 180 days
+            Last 365 days
           </div>
         </div>
         
@@ -116,7 +116,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
                   dataKey="date"
                   tick={{ fill: '#9ca3af' }}
                   axisLine={{ stroke: '#1E3A5F' }}
-                  minTickGap={40}
+                  minTickGap={60}
                 />
                 <YAxis 
                   tickFormatter={formatPrice}
