@@ -23,10 +23,9 @@ const TokenHeader: React.FC<TokenHeaderProps> = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 text-transparent bg-clip-text">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent bg-clip-text">
               ${tokenInfo.symbol} Metrics
             </h1>
-            {tokenInfo.marketData.price}
           </div>
           <p className="text-slate-400 mt-1">
             {tokenInfo.name} ({tokenInfo.symbol}) metrics across all chains
