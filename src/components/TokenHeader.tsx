@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { CombinedTokenData } from '@/services/tokenAPIService';
 import { ExternalLink, Clock } from 'lucide-react';
@@ -24,7 +23,7 @@ const TokenHeader: React.FC<TokenHeaderProps> = ({
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 text-transparent bg-clip-text">
-              ${tokenInfo.symbol} Cross Chain Stats
+              ${tokenInfo.symbol} Token Tracker
             </h1>
             {tokenInfo.marketData.price}
           </div>

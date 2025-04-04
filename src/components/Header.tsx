@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Globe, BookOpen, AppWindow, Twitter, Instagram, MessageCircle, BarChart2, Menu, X } from "lucide-react";
@@ -14,8 +13,8 @@ const Header: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <a href="https://dehub.io" target="_blank" rel="noopener noreferrer" className="flex items-center">
-              <img src="/lovable-uploads/90e9c6cb-256c-48cb-ba77-7bced4c8509a.png" alt="DeHub Logo" className="h-10 w-auto mr-2" />
-              <span className="text-xl font-semibold text-white ml-2">DHBscan</span>
+              <img src="/lovable-uploads/574b9d8d-10f7-42af-8534-4d0a606c9aa3.png" alt="DeHub Logo" className="h-10 w-auto mr-2" />
+              
             </a>
           </div>
 
