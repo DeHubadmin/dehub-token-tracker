@@ -31,6 +31,12 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
     return null;
   }
   
+  // Determine color classes based on value for each card
+  const getDayChangeColorClass = () => holderStats.changes.day.value >= 0 ? "text-green-500" : "text-red-500";
+  const getWeekChangeColorClass = () => holderStats.changes.week.value >= 0 ? "text-green-500" : "text-red-500";
+  const getMonthChangeColorClass = () => holderStats.changes.month.value >= 0 ? "text-green-500" : "text-red-500";
+  const getYearChangeColorClass = () => holderStats.changes.year.value >= 0 ? "text-green-500" : "text-red-500";
+  
   return <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2 my-[40px] py-0">
         <Users size={20} className="text-indigo-400" />
@@ -51,7 +57,7 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           value={holderStats.changes.day.formatted} 
           description="From previous period" 
           icon={holderStats.changes.day.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
-          className={holderStats.changes.day.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
+          className={`${getDayChangeColorClass()} dehub-glow`} 
         />
         
         <MarketDataCard 
@@ -59,7 +65,7 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           value={holderStats.changes.week.formatted} 
           description="From previous period" 
           icon={holderStats.changes.week.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
-          className={holderStats.changes.week.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
+          className={`${getWeekChangeColorClass()} dehub-glow`} 
         />
         
         <MarketDataCard 
@@ -67,7 +73,7 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           value={holderStats.changes.month.formatted} 
           description="From previous period" 
           icon={holderStats.changes.month.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
-          className={holderStats.changes.month.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
+          className={`${getMonthChangeColorClass()} dehub-glow`} 
         />
         
         <MarketDataCard 
@@ -75,7 +81,7 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           value={holderStats.changes.year.formatted} 
           description="From previous period" 
           icon={holderStats.changes.year.value >= 0 ? <TrendingUp size={24} className="text-green-500" /> : <TrendingDown size={24} className="text-red-500" />} 
-          className={holderStats.changes.year.value >= 0 ? "text-green-500 dehub-glow" : "text-red-500 dehub-glow"} 
+          className={`${getYearChangeColorClass()} dehub-glow`} 
         />
       </div>
     </>;
