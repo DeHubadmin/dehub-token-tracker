@@ -67,6 +67,7 @@ export interface TokenHolder {
   formattedBalance: string;
   percentage: string;
   lastChanged: string;
+  chain?: string; // Added chain property
 }
 
 export interface TokenTransfer {
@@ -84,6 +85,8 @@ export interface HolderData {
   holderStats: HolderStats;
   topHolders: TokenHolder[];
   recentTransfers: TokenTransfer[];
+  dailyUpdate?: boolean; // Added flag for daily update
+  lastUpdated?: string; // Added last updated timestamp
 }
 
 export interface CombinedTokenData {

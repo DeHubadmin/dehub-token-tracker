@@ -1,20 +1,28 @@
 
 project_id = "wgmvohihwaffavfstmfr"
 
-[functions.fetchtokensupply]
-verify_jwt = false
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
 
-[functions.tokensupplyapi]
-verify_jwt = false
+[db]
+port = 54322
 
-[functions.chainbreakdownapi]
-verify_jwt = false
+[studio]
+port = 54323
 
-[functions.combinedtokenapi]
-verify_jwt = false
+[inbucket]
+port = 54324
+
+[storage]
+enabled = true
+
+[auth]
+enabled = true
 
 [functions.tokenholderapi]
 verify_jwt = false
 
-[functions.combinedTokenAPI]
+[functions.updateholders]
 verify_jwt = false
