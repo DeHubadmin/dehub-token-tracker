@@ -11,7 +11,6 @@ import HolderStatsSection from './dashboard/HolderStatsSection';
 import TopHoldersSection from './dashboard/TopHoldersSection';
 import RecentTransfersSection from './dashboard/RecentTransfersSection';
 import LastUpdatedInfo from './dashboard/LastUpdatedInfo';
-import { mockTokenData } from '@/services/mockData';
 import { toast } from 'sonner';
 
 const TokenDashboard: React.FC = () => {
@@ -22,75 +21,68 @@ const TokenDashboard: React.FC = () => {
     retryDelay: 1000,
     staleTime: 60000, // Increase stale time to reduce API calls
     refetchInterval: 60000, // Reduce refetch frequency 
-    onError: (err) => {
-      console.error("Error fetching token data:", err);
-      toast.error("Using offline data - API services unavailable", {
-        description: "We're showing cached data until our servers are back online.",
-        duration: 5000
-      });
+    meta: {
+      onError: (err: Error) => {
+        console.error("Error fetching token data:", err);
+        toast.error("Unable to fetch token data", {
+          description: "Please check your network connection and try again.",
+          duration: 5000
+        });
+      }
     }
   });
 
-  // Use mock data if there's an error or tokenInfo is null
-  const displayData = error || !tokenInfo ? mockTokenData : tokenInfo;
-  const isLoadingOrError = isLoading && !displayData;
-
-  // When using mock data, show an indicator
-  React.useEffect(() => {
-    if (error && !isLoading) {
-      console.log("Using mock data due to API error");
-    }
-  }, [error, isLoading]);
+  const isLoadingOrError = isLoading || error || !tokenInfo;
 
   return (
     <div className="container px-4 py-8 mt-4 mx-auto max-w-6xl">
-      {error && !isLoading && (
-        <div className="bg-amber-900/30 border border-amber-800 text-amber-200 px-4 py-3 rounded mb-6">
+      {error && (
+        <div className="bg-red-900/30 border border-red-800 text-red-200 px-4 py-3 rounded mb-6">
           <p className="text-sm font-medium">
-            Network connection issues detected. Showing offline data until services are restored.
+            Network connection issues detected. Please check your connection and try again.
           </p>
         </div>
       )}
       
-      <TokenHeader tokenInfo={displayData} isLoading={isLoadingOrError} />
+      <TokenHeader tokenInfo={tokenInfo} isLoading={isLoadingOrError} />
       
       <MarketDataSection 
-        tokenInfo={displayData} 
+        tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
       <PriceChangesSection 
-        tokenInfo={displayData} 
+        tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
       <SupplyMetricsSection 
-        tokenInfo={displayData} 
+        tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
       <ChainBreakdownSection 
-        tokenInfo={displayData} 
+        tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
       <HolderStatsSection 
-        tokenInfo={displayData} 
+        tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
       <TopHoldersSection 
-        tokenInfo={displayData} 
+        tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
       <RecentTransfersSection 
-        tokenInfo={displayData} 
+        tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
       <LastUpdatedInfo 
-        timestamp={displayData?.marketData?.lastUpdated} 
+        timestamp={tokenInfo?.marketData?.lastUpdated} 
         isLoading={isLoadingOrError} 
       />
     </div>
