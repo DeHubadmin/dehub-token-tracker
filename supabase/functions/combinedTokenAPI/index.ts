@@ -62,7 +62,8 @@ async function handleRequest(req: Request) {
           value: tokenData.maxSupply,
           formatted: tokenData.formattedMaxSupply,
           description: "Maximum possible token supply"
-        }
+        },
+        lastUpdated: tokenData.lastUpdated
       },
       
       // Chain breakdown
@@ -81,7 +82,8 @@ async function handleRequest(req: Request) {
         totalSupplyAcrossChains: {
           value: tokenData.totalSupplyAcrossChains,
           formatted: tokenData.formattedTotalSupplyAcrossChains
-        }
+        },
+        lastUpdated: tokenData.lastUpdated
       },
       
       // Market data
