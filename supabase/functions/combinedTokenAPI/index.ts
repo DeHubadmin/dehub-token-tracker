@@ -1,6 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
-import { CORS_HEADERS } from "../fetchTokenSupply/cors.ts";
+import { CORS_HEADERS } from "./cors.ts";
 
 // Function to handle the request
 async function handleRequest(req: Request) {
@@ -27,7 +27,7 @@ async function handleRequest(req: Request) {
   
   try {
     // Call the fetchTokenSupply endpoint to get all data
-    const response = await fetch("https://wgmvohihwaffavfstmfr.supabase.co/functions/v1/fetchTokenSupply", {
+    const response = await fetch("https://wgmvohihwaffavfstmfr.supabase.co/functions/v1/fetchtokensupply", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { TokenInfo } from '@/services/tokenService';
+import { CombinedTokenData } from '@/services/tokenAPIService';
 import ChainSupplyCard from '../ChainSupplyCard';
 import { ArrowUpCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface ChainBreakdownSectionProps {
-  tokenInfo: TokenInfo | undefined;
+  tokenInfo: CombinedTokenData | undefined;
   isLoading: boolean;
 }
 
@@ -15,7 +15,7 @@ const ChainBreakdownSection: React.FC<ChainBreakdownSectionProps> = ({
   tokenInfo, 
   isLoading 
 }) => {
-  const hasNoChains = !isLoading && (!tokenInfo?.chains || tokenInfo.chains.length === 0);
+  const hasNoChains = !isLoading && (!tokenInfo?.chainBreakdown?.chains || tokenInfo.chainBreakdown.chains.length === 0);
 
   return (
     <>
@@ -24,7 +24,7 @@ const ChainBreakdownSection: React.FC<ChainBreakdownSectionProps> = ({
         Chain Breakdown
       </h2>
       
-      {isLoading || !tokenInfo?.chains ? (
+      {isLoading || !tokenInfo?.chainBreakdown?.chains ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
             <Card key={i} className="dehub-card p-6">
@@ -39,12 +39,21 @@ const ChainBreakdownSection: React.FC<ChainBreakdownSectionProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {tokenInfo.chains.map((chain) => {
-            const percentage = (chain.totalSupply / (tokenInfo?.totalSupplyAcrossChains || 1)) * 100;
+          {tokenInfo.chainBreakdown.chains.map((chain) => {
+            const percentage = chain.supply.percentage || 
+              (chain.supply.value / (tokenInfo.chainBreakdown.totalSupplyAcrossChains.value || 1)) * 100;
             return (
               <ChainSupplyCard 
-                key={chain.chain} 
-                chainSupply={chain} 
+                key={chain.name} 
+                chainSupply={{
+                  chain: chain.name,
+                  chainId: chain.chainId,
+                  tokenAddress: chain.tokenAddress,
+                  totalSupply: chain.supply.value,
+                  formattedTotalSupply: chain.supply.formatted,
+                  decimals: 18,
+                  scannerUrl: chain.scannerUrl
+                }} 
                 percentage={percentage} 
               />
             );
