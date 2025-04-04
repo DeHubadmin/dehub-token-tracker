@@ -14,19 +14,30 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
   tokenInfo,
   isLoading
 }) => {
+  // Always show loading state if data is loading or if holderStats is undefined
   if (isLoading || !tokenInfo?.holderData?.holderStats) {
-    return <div className="mb-8">
+    return (
+      <div className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
           <Users size={20} className="text-indigo-400" />
-          <Skeleton className="h-8 w-32" />
+          <span>Holders Statistics</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          {[...Array(5)].map((_, index) => <MarketDataCard key={index} title="" value="" isLoading={true} />)}
+          {[...Array(5)].map((_, index) => (
+            <MarketDataCard 
+              key={index} 
+              title="" 
+              value="" 
+              isLoading={true} 
+              className="dehub-glow"
+            />
+          ))}
         </div>
-      </div>;
+      </div>
+    );
   }
   
-  const holderStats = tokenInfo?.holderData?.holderStats;
+  const holderStats = tokenInfo.holderData.holderStats;
   
   // Determine color classes based on value for each card
   const getDayChangeColorClass = () => holderStats.changes.day.value >= 0 ? "text-green-500" : "text-red-500";
@@ -34,7 +45,8 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
   const getMonthChangeColorClass = () => holderStats.changes.month.value >= 0 ? "text-green-500" : "text-red-500";
   const getYearChangeColorClass = () => holderStats.changes.year.value >= 0 ? "text-green-500" : "text-red-500";
   
-  return <>
+  return (
+    <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2 my-[40px] py-0">
         <Users size={20} className="text-indigo-400" />
         Holders Statistics
@@ -81,7 +93,8 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           className={getYearChangeColorClass() + " dehub-glow"}
         />
       </div>
-    </>;
+    </>
+  );
 };
 
 export default HolderStatsSection;

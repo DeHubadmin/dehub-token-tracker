@@ -20,27 +20,57 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [displayCount, setDisplayCount] = useState(10);
   
-  // If data is loading or if holderData or topHolders is undefined, show skeleton
+  // Always show loading state if data is loading or if topHolders is undefined
   if (isLoading || !tokenInfo?.holderData?.topHolders) {
-    return <div className="mb-8">
+    return (
+      <div className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
           <Shield size={20} className="text-indigo-400" />
-          <Skeleton className="h-8 w-40" />
+          <span>Top Holders</span>
         </h2>
         <Card className="bg-dehub-card border-dehub-card-border">
           <CardHeader>
-            <Skeleton className="h-8 w-40" />
+            <div className="mt-4">
+              <Skeleton className="h-10 w-full" />
+            </div>
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-80 w-full" />
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-b border-white/10">
+                    <TableHead className="text-white">Rank</TableHead>
+                    <TableHead className="text-white">Address</TableHead>
+                    <TableHead className="text-white text-right">Balance</TableHead>
+                    <TableHead className="text-white text-right">Percentage</TableHead>
+                    <TableHead className="text-white">Last Changed</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[...Array(10)].map((_, index) => (
+                    <TableRow key={index} className="border-b border-white/10">
+                      <TableCell><Skeleton className="h-4 w-8" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-4 w-24 ml-auto" /></TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
-      </div>;
+      </div>
+    );
   }
   
-  const topHolders = tokenInfo?.holderData?.topHolders || [];
+  const topHolders = tokenInfo.holderData.topHolders;
+  
+  // If we have no holders data at all, show a message
   if (topHolders.length === 0) {
-    return <div className="mb-8">
+    return (
+      <div className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
           <Shield size={20} className="text-indigo-400" />
           Top Holders
@@ -50,7 +80,8 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
             <p className="text-white opacity-60">No holder data available at this time.</p>
           </CardContent>
         </Card>
-      </div>;
+      </div>
+    );
   }
 
   // Filter by search query if provided
@@ -69,7 +100,8 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
   
-  return <>
+  return (
+    <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
         <Shield size={20} className="text-indigo-400" />
         Top Holders
@@ -99,7 +131,8 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {displayedHolders.map(holder => <TableRow key={holder.address} className="border-b border-white/10">
+                {displayedHolders.map(holder => (
+                  <TableRow key={holder.address} className="border-b border-white/10">
                     <TableCell className="text-white">{holder.rank}</TableCell>
                     <TableCell className="text-white">
                       <span className="font-mono">{formatAddress(holder.address)}</span>
@@ -109,19 +142,27 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
                     <TableCell className="text-white">
                       {new Date(holder.lastChanged).toLocaleDateString()}
                     </TableCell>
-                  </TableRow>)}
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>
           
-          {displayCount < filteredHolders.length && <div className="mt-4 text-center">
-              <Button onClick={loadMore} variant="outline" className="border-dehub-border text-white hover:bg-indigo-700">
+          {displayCount < filteredHolders.length && (
+            <div className="mt-4 text-center">
+              <Button 
+                onClick={loadMore} 
+                variant="outline" 
+                className="border-dehub-border text-white hover:bg-indigo-700"
+              >
                 Load More
               </Button>
-            </div>}
+            </div>
+          )}
         </CardContent>
       </Card>
-    </>;
+    </>
+  );
 };
 
 export default TopHoldersSection;

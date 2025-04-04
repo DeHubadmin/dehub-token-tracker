@@ -18,8 +18,8 @@ const TokenDashboard: React.FC = () => {
     queryFn: fetchCombinedTokenData,
     retry: 3,
     retryDelay: 1000,
-    staleTime: 30000, // Reduce stale time to 30 seconds to fetch fresh data more often
-    refetchInterval: 60000 // Refetch every minute to ensure data is updated regularly
+    staleTime: 15000, // Reduce stale time to 15 seconds to fetch fresh data more often
+    refetchInterval: 30000 // Refetch every 30 seconds to ensure data is updated regularly
   });
 
   // If there's an error or tokenInfo is null, we show loading state
