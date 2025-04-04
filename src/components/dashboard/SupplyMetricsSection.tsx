@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { TokenInfo } from '@/services/tokenService';
+import { CombinedTokenData } from '@/services/tokenAPIService';
 import SupplyMetricCard from '../SupplyMetricCard';
 import { Coins, BarChart, Trophy } from 'lucide-react';
 
 interface SupplyMetricsSectionProps {
-  tokenInfo: TokenInfo | undefined;
+  tokenInfo: CombinedTokenData | undefined;
   isLoading: boolean;
 }
 
@@ -13,8 +13,6 @@ const SupplyMetricsSection: React.FC<SupplyMetricsSectionProps> = ({
   tokenInfo, 
   isLoading 
 }) => {
-  console.log("Supply metrics data:", tokenInfo); // Add logging to check data
-  
   return (
     <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
@@ -25,21 +23,21 @@ const SupplyMetricsSection: React.FC<SupplyMetricsSectionProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <SupplyMetricCard
           title="Total Supply (All Chains)"
-          value={tokenInfo?.formattedTotalSupplyAcrossChains || '0'}
+          value={tokenInfo?.supplyMetrics.totalSupply.formatted || '0'}
           description="Total tokens across all supported chains"
           icon={<Coins size={24} />}
           isLoading={isLoading}
         />
         <SupplyMetricCard
           title="Circulating Supply"
-          value={tokenInfo?.formattedCirculatingSupply || '0'}
+          value={tokenInfo?.supplyMetrics.circulatingSupply.formatted || '0'}
           description="Tokens available in the market"
           icon={<BarChart size={24} />}
           isLoading={isLoading}
         />
         <SupplyMetricCard
           title="Maximum Supply"
-          value={tokenInfo?.formattedMaxSupply || '0'}
+          value={tokenInfo?.supplyMetrics.maxSupply.formatted || '0'}
           description="Maximum possible token supply"
           icon={<Trophy size={24} />}
           isLoading={isLoading}

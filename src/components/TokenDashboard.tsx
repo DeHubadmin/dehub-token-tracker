@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchCombinedTokenData } from '@/services/tokenAPIService';
+import { fetchCombinedTokenData, CombinedTokenData } from '@/services/tokenAPIService';
 import TokenHeader from './TokenHeader';
 import MarketDataSection from './dashboard/MarketDataSection';
 import PriceChangesSection from './dashboard/PriceChangesSection';
