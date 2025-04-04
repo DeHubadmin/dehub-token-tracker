@@ -8,7 +8,7 @@ const Header: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
   return <header className="w-full relative">
-      <div className="px-4 py-4 mx-auto max-w-7xl">
+      <div className="py-4 mx-auto max-w-7xl px-[65px]">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
