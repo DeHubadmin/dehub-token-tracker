@@ -1,3 +1,4 @@
+
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -66,7 +67,6 @@ export interface TokenHolder {
   formattedBalance: string;
   percentage: string;
   lastChanged: string;
-  chain?: string; // Added chain property
 }
 
 export interface TokenTransfer {
@@ -84,8 +84,6 @@ export interface HolderData {
   holderStats: HolderStats;
   topHolders: TokenHolder[];
   recentTransfers: TokenTransfer[];
-  dailyUpdate?: boolean; // Added flag for daily update
-  lastUpdated?: string; // Added last updated timestamp
 }
 
 export interface CombinedTokenData {
@@ -131,6 +129,7 @@ export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
     
     if (error) {
       console.error("Error invoking tokensupplyapi function:", error);
+      toast.error("Failed to fetch supply metrics");
       return null;
     }
     
@@ -138,6 +137,7 @@ export async function fetchSupplyMetrics(): Promise<SupplyMetrics | null> {
     return data as SupplyMetrics;
   } catch (error) {
     console.error("Failed to fetch supply metrics:", error);
+    toast.error("Failed to fetch supply metrics");
     return null;
   }
 }
@@ -150,12 +150,14 @@ export async function fetchChainBreakdown(): Promise<ChainBreakdown | null> {
     
     if (error) {
       console.error("Error invoking chainbreakdownapi function:", error);
+      toast.error("Failed to fetch chain breakdown");
       return null;
     }
     
     return data as ChainBreakdown;
   } catch (error) {
     console.error("Failed to fetch chain breakdown:", error);
+    toast.error("Failed to fetch chain breakdown");
     return null;
   }
 }
@@ -169,6 +171,7 @@ export async function fetchHolderData(): Promise<HolderData | null> {
     
     if (error) {
       console.error("Error invoking tokenholderapi function:", error);
+      toast.error("Failed to fetch holder data");
       return null;
     }
     
@@ -176,6 +179,7 @@ export async function fetchHolderData(): Promise<HolderData | null> {
     return data as HolderData;
   } catch (error) {
     console.error("Failed to fetch holder data:", error);
+    toast.error("Failed to fetch holder data");
     return null;
   }
 }
@@ -183,29 +187,17 @@ export async function fetchHolderData(): Promise<HolderData | null> {
 export async function fetchCombinedTokenData(): Promise<CombinedTokenData | null> {
   try {
     const { data, error } = await supabase.functions.invoke('combinedtokenapi', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
+      method: 'GET'
     });
     
     if (error) {
       console.error("Error invoking combinedtokenapi function:", error);
-      throw error;
+      toast.error("Failed to fetch token data");
+      return null;
     }
     
-    if (!data) {
-      throw new Error("No data received from API");
-    }
-    
-    // Try to fetch holder data separately
-    let holderData = null;
-    try {
-      holderData = await fetchHolderData();
-    } catch (holderError) {
-      console.error("Error fetching holder data:", holderError);
-      // Continue without holder data
-    }
+    // Fetch holder data separately to get real-time data
+    const holderData = await fetchHolderData();
     
     // Combine the data
     const combinedData = {
@@ -216,6 +208,7 @@ export async function fetchCombinedTokenData(): Promise<CombinedTokenData | null
     return combinedData;
   } catch (error) {
     console.error("Failed to fetch combined token data:", error);
-    throw error; // Let the React Query handle the error
+    toast.error("Failed to fetch token data");
+    return null;
   }
 }

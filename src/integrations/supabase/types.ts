@@ -93,42 +93,6 @@ export type Database = {
           },
         ]
       }
-      holder_stats: {
-        Row: {
-          base_chain_holders: number
-          bnb_chain_holders: number
-          day_change_percent: number
-          id: number
-          last_updated: string | null
-          month_change_percent: number
-          total_holders: number
-          week_change_percent: number
-          year_change_percent: number
-        }
-        Insert: {
-          base_chain_holders: number
-          bnb_chain_holders: number
-          day_change_percent: number
-          id?: number
-          last_updated?: string | null
-          month_change_percent: number
-          total_holders: number
-          week_change_percent: number
-          year_change_percent: number
-        }
-        Update: {
-          base_chain_holders?: number
-          bnb_chain_holders?: number
-          day_change_percent?: number
-          id?: number
-          last_updated?: string | null
-          month_change_percent?: number
-          total_holders?: number
-          week_change_percent?: number
-          year_change_percent?: number
-        }
-        Relationships: []
-      }
       lawsuit_signatures: {
         Row: {
           created_at: string
@@ -329,36 +293,6 @@ export type Database = {
         }
         Relationships: []
       }
-      token_holders: {
-        Row: {
-          address: string
-          balance: number
-          chain: string
-          id: number
-          last_updated: string | null
-          percentage: number
-          rank: number
-        }
-        Insert: {
-          address: string
-          balance: number
-          chain: string
-          id?: number
-          last_updated?: string | null
-          percentage: number
-          rank: number
-        }
-        Update: {
-          address?: string
-          balance?: number
-          chain?: string
-          id?: number
-          last_updated?: string | null
-          percentage?: number
-          rank?: number
-        }
-        Relationships: []
-      }
       user_comment_interactions: {
         Row: {
           comment_id: string
@@ -491,19 +425,6 @@ export type Database = {
       }
     }
     Functions: {
-      get_latest_holder_stats: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          total_holders: number
-          bnb_chain_holders: number
-          base_chain_holders: number
-          day_change_percent: number
-          week_change_percent: number
-          month_change_percent: number
-          year_change_percent: number
-          last_updated: string
-        }[]
-      }
       get_signature_count: {
         Args: Record<PropertyKey, never>
         Returns: number

@@ -11,40 +11,22 @@ import HolderStatsSection from './dashboard/HolderStatsSection';
 import TopHoldersSection from './dashboard/TopHoldersSection';
 import RecentTransfersSection from './dashboard/RecentTransfersSection';
 import LastUpdatedInfo from './dashboard/LastUpdatedInfo';
-import { toast } from 'sonner';
 
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
     queryKey: ['tokenInfo'],
     queryFn: fetchCombinedTokenData,
-    retry: 2,
+    retry: 3,
     retryDelay: 1000,
-    staleTime: 60000, // Increase stale time to reduce API calls
-    refetchInterval: 60000, // Reduce refetch frequency 
-    meta: {
-      onError: (err: Error) => {
-        console.error("Error fetching token data:", err);
-        toast.error("Unable to fetch token data", {
-          description: "Please check your network connection and try again.",
-          duration: 5000
-        });
-      }
-    }
+    staleTime: 10000, // Reduce stale time to 10 seconds to fetch fresh data more often
+    refetchInterval: 20000 // Refetch every 20 seconds to ensure data is updated regularly
   });
 
-  // Create a boolean that's true if we're loading, have an error, or don't have data
+  // If there's an error or tokenInfo is null, we show loading state
   const isLoadingOrError = isLoading || error !== null || !tokenInfo;
 
   return (
     <div className="container px-4 py-8 mt-4 mx-auto max-w-6xl">
-      {error && (
-        <div className="bg-red-900/30 border border-red-800 text-red-200 px-4 py-3 rounded mb-6">
-          <p className="text-sm font-medium">
-            Network connection issues detected. Please check your connection and try again.
-          </p>
-        </div>
-      )}
-      
       <TokenHeader tokenInfo={tokenInfo} isLoading={isLoadingOrError} />
       
       <MarketDataSection 
