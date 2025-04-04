@@ -1,13 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
-
-// Define CORS headers
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, ApiKey",
-  "Access-Control-Max-Age": "86400",
-};
+import { CORS_HEADERS } from "./cors.ts";
 
 // Function to handle the request
 async function handleRequest(req: Request) {
@@ -66,9 +59,6 @@ async function handleRequest(req: Request) {
       },
       lastUpdated: tokenData.lastUpdated
     };
-    
-    // Log the response we're about to send for debugging
-    console.log("Sending supply metrics response:", JSON.stringify(supplyMetrics));
     
     return new Response(JSON.stringify(supplyMetrics), {
       status: 200,

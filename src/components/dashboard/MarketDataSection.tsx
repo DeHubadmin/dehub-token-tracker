@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { TokenInfo } from '@/services/tokenService';
+import { CombinedTokenData } from '@/services/tokenAPIService';
 import MarketDataCard from '../MarketDataCard';
 import { DollarSign, Activity, TrendingUp } from 'lucide-react';
 
 interface MarketDataSectionProps {
-  tokenInfo: TokenInfo | undefined;
+  tokenInfo: CombinedTokenData | undefined;
   isLoading: boolean;
 }
 
@@ -23,14 +23,14 @@ const MarketDataSection: React.FC<MarketDataSectionProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <MarketDataCard
           title="Current Price"
-          value={tokenInfo?.formattedPrice || '$0.00000'}
+          value={tokenInfo?.marketData.formattedPrice || '$0.00000'}
           description="Current token price in USD"
           icon={<DollarSign size={24} />}
           isLoading={isLoading}
         />
         <MarketDataCard
           title="Market Cap"
-          value={tokenInfo?.formattedMarketCap || '$0.00'}
+          value={tokenInfo?.marketData.formattedMarketCap || '$0.00'}
           description="Price × Circulating Supply"
           tooltipContent="Calculated by multiplying the current price by the circulating supply"
           icon={<Activity size={24} />}
@@ -38,7 +38,7 @@ const MarketDataSection: React.FC<MarketDataSectionProps> = ({
         />
         <MarketDataCard
           title="24h Volume"
-          value={tokenInfo?.formattedTotalVolume || '$0.00'}
+          value={tokenInfo?.marketData.formattedTotalVolume || '$0.00'}
           description="Trading volume in the last 24 hours"
           icon={<TrendingUp size={24} />}
           isLoading={isLoading}

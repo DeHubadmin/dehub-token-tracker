@@ -12,3 +12,6 @@ verify_jwt = false
 
 [functions.combinedtokenapi]
 verify_jwt = false
+
+[functions.tokenholderapi]
+verify_jwt = false

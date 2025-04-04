@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { TokenInfo } from '@/services/tokenService';
+import { CombinedTokenData } from '@/services/tokenAPIService';
 import { ExternalLink, Clock } from 'lucide-react';
 
 interface TokenHeaderProps {
-  tokenInfo: TokenInfo | undefined;
+  tokenInfo: CombinedTokenData | undefined;
   isLoading: boolean;
 }
 
@@ -20,8 +20,8 @@ const TokenHeader: React.FC<TokenHeaderProps> = ({ tokenInfo, isLoading }) => {
   if (!tokenInfo) return null;
 
   // Format the last updated time
-  const lastUpdated = tokenInfo.lastUpdated 
-    ? new Date(tokenInfo.lastUpdated).toLocaleString() 
+  const lastUpdated = tokenInfo.marketData.lastUpdated 
+    ? new Date(tokenInfo.marketData.lastUpdated).toLocaleString() 
     : 'Unknown';
 
   return (
@@ -32,9 +32,9 @@ const TokenHeader: React.FC<TokenHeaderProps> = ({ tokenInfo, isLoading }) => {
             <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 text-transparent bg-clip-text">
               ${tokenInfo.symbol} Token Tracker
             </h1>
-            {tokenInfo.price && (
+            {tokenInfo.marketData.price && (
               <span className="text-xl font-semibold text-white">
-                {tokenInfo.formattedPrice}
+                {tokenInfo.marketData.formattedPrice}
               </span>
             )}
           </div>
@@ -48,16 +48,16 @@ const TokenHeader: React.FC<TokenHeaderProps> = ({ tokenInfo, isLoading }) => {
         </div>
         
         <div className="flex flex-wrap gap-2">
-          {tokenInfo.chains.map((chain) => (
+          {tokenInfo.chainBreakdown.chains.map((chain) => (
             <a 
-              key={chain.chain}
+              key={chain.name}
               href={chain.scannerUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full
                 bg-slate-800 text-slate-200 hover:bg-slate-700 transition-colors"
             >
-              {chain.chain} <ExternalLink size={12} />
+              {chain.name} <ExternalLink size={12} />
             </a>
           ))}
         </div>

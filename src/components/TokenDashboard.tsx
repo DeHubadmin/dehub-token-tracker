@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchTokenInfo } from '@/services/tokenService';
+import { fetchCombinedTokenData } from '@/services/tokenAPIService';
 import TokenHeader from './TokenHeader';
 import MarketDataSection from './dashboard/MarketDataSection';
 import PriceChangesSection from './dashboard/PriceChangesSection';
@@ -15,7 +15,7 @@ import LastUpdatedInfo from './dashboard/LastUpdatedInfo';
 const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
     queryKey: ['tokenInfo'],
-    queryFn: fetchTokenInfo,
+    queryFn: fetchCombinedTokenData,
     retry: 2,
     retryDelay: 1000
   });
@@ -63,7 +63,7 @@ const TokenDashboard: React.FC = () => {
       />
       
       <LastUpdatedInfo 
-        timestamp={tokenInfo?.lastUpdated} 
+        timestamp={tokenInfo?.marketData?.lastUpdated} 
         isLoading={isLoadingOrError} 
       />
     </div>
