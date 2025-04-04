@@ -26,7 +26,7 @@ const TokenDashboard: React.FC = () => {
   const isLoadingOrError = isLoading || error !== null || !tokenInfo;
 
   return (
-    <div className="container px-4 py-8 mx-auto max-w-6xl">
+    <div className="container px-4 py-8 mt-4 mx-auto max-w-6xl">
       <TokenHeader tokenInfo={tokenInfo} isLoading={isLoadingOrError} />
       
       <MarketDataSection 
