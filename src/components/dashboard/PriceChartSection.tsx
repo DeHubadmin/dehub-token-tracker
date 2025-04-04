@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { CombinedTokenData } from '@/services/tokenAPIService';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -12,77 +12,79 @@ interface PriceChartSectionProps {
 
 // Define the price data structure
 interface PriceDataPoint {
-  date: Date;
+  name: string;
   price: number;
+  timestamp: Date;
 }
 
 const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   tokenInfo,
   isLoading
 }) => {
-  // State to store historical price data
-  const [historicalData, setHistoricalData] = useState<PriceDataPoint[]>([]);
-  const [isHistoricalDataLoading, setIsHistoricalDataLoading] = useState<boolean>(true);
-  const [dataError, setDataError] = useState<string | null>(null);
-  
-  // Fetch historical data
-  useEffect(() => {
-    async function fetchHistoricalData() {
-      setIsHistoricalDataLoading(true);
-      try {
-        const response = await fetch('/api/historical-price');
-        
-        if (!response.ok) {
-          throw new Error(`API returned ${response.status}`);
-        }
-        
-        const data = await response.json();
-        setHistoricalData(data);
-        setDataError(null);
-      } catch (error) {
-        console.error('Failed to fetch historical data:', error);
-        setDataError('Failed to load historical price data');
-      } finally {
-        setIsHistoricalDataLoading(false);
-      }
-    }
-    
-    fetchHistoricalData();
-  }, []);
-  
   // Format price for display
   const formatPrice = (value: number) => {
-    return `$${value < 0.001 ? value.toFixed(6) : value.toFixed(5)}`;
+    return `$${value.toFixed(5)}`;
   };
   
-  // Format date for tooltip
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  // Generate price data from the actual token information
+  const priceData = useMemo(() => {
+    if (!tokenInfo) return [];
+    
+    // We'll create a simple dataset using the available price metrics
+    // In a real implementation, you would fetch historical price data from an API
+    const currentPrice = tokenInfo.marketData.price;
+    
+    // Calculate prices based on percentage changes
+    const calculate = (percentage: number) => {
+      // Calculate the price in the past based on the percentage change
+      // For example, if current price is $1 and 7d change is -10%, then price 7 days ago was $1.11...
+      return currentPrice / (1 + (percentage / 100));
+    };
+    
+    const today = new Date();
+    
+    return [
+      // Generate data points based on actual percentage changes
+      {
+        name: '30d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage30d),
+        timestamp: new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: '14d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage14d),
+        timestamp: new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: '7d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage7d),
+        timestamp: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: '1d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage24h),
+        timestamp: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: 'Now',
+        price: currentPrice,
+        timestamp: today
+      },
+    ].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()); // Sort by timestamp
+  }, [tokenInfo]);
   
-  // Format date for X-axis
-  const formatXAxis = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-  };
-  
-  // Define chart config
+  // Define config for the chart
   const chartConfig = {
     price: {
       label: 'Price',
       theme: {
-        light: '#ff4b45',
-        dark: '#ff4b45'
+        light: '#33C3F0',
+        dark: '#33C3F0'
       }
     }
   };
-  
-  // Show loading state
-  if (isLoading || isHistoricalDataLoading) {
+
+  if (isLoading) {
     return (
       <div className="mb-8">
         <div className="h-8 w-48 bg-slate-700 rounded animate-pulse mb-4"></div>
@@ -90,32 +92,17 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
       </div>
     );
   }
-  
-  // Show error state
-  if (dataError || !tokenInfo) {
-    return (
-      <div className="mb-8">
-        <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
-          <TrendingUp size={20} className="text-red-400" />
-          Price Chart
-        </h2>
-        <div className="p-4 bg-slate-800 rounded-lg mb-8 text-center">
-          <p className="text-red-400">
-            {dataError || "Unable to load price chart data"}
-          </p>
-        </div>
-      </div>
-    );
-  }
+
+  if (!tokenInfo) return null;
 
   return (
     <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
-        <TrendingUp size={20} className="text-red-400" />
+        <TrendingUp size={20} className="text-blue-400" />
         Price Chart
       </h2>
       
-      <div className="p-4 bg-[#121c36] rounded-lg mb-8">
+      <div className="p-4 bg-slate-800 rounded-lg mb-8">
         <div className="mb-4 flex justify-between items-center">
           <div>
             <span className="text-lg font-bold text-white">
@@ -127,40 +114,37 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
             </span>
           </div>
           <div className="text-sm text-slate-400">
-            From Jan 2021 to Present
+            Last 30 days
           </div>
         </div>
         
-        <div className="h-[350px] w-full">
+        <div className="h-[300px] w-full">
           <ChartContainer
             config={chartConfig}
             className="h-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={historicalData}
-                margin={{ top: 10, right: 25, left: 10, bottom: 30 }}
+                data={priceData}
+                margin={{ top: 10, right: 10, left: 10, bottom: 30 }}
               >
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis 
+                  dataKey="name"
+                  tick={{ fill: '#9ca3af' }}
+                  axisLine={{ stroke: '#4b5563' }}
+                />
                 <YAxis 
-                  scale="log"
-                  domain={['auto', 'auto']}
                   tickFormatter={formatPrice}
                   tick={{ fill: '#9ca3af' }}
                   axisLine={{ stroke: '#4b5563' }}
-                  tickCount={5}
-                />
-                <XAxis 
-                  dataKey="date"
-                  tickFormatter={formatXAxis}
-                  tick={{ fill: '#9ca3af' }}
-                  axisLine={{ stroke: '#4b5563' }}
-                  minTickGap={50}
+                  domain={['auto', 'auto']}
                 />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
-                      labelFormatter={(label) => formatDate(new Date(label))}
-                      formatter={(value: any) => [`$${Number(value).toFixed(6)}`, 'Price']}
+                      labelFormatter={(label) => `${label}`}
+                      formatter={(value: any) => [`$${Number(value).toFixed(5)}`, 'Price']}
                       labelClassName="text-slate-300"
                     />
                   }
@@ -168,14 +152,18 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
                 <Line
                   type="monotone"
                   dataKey="price"
-                  stroke="#ff4b45"
+                  stroke="#33C3F0"
                   strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 4, fill: '#ff4b45', stroke: '#fff', strokeWidth: 1 }}
+                  dot={{ r: 3, fill: '#33C3F0', stroke: '#33C3F0', strokeWidth: 1 }}
+                  activeDot={{ r: 5, fill: '#33C3F0', stroke: '#fff', strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </ChartContainer>
+        </div>
+        
+        <div className="text-xs text-slate-500 mt-2 text-center">
+          Note: This chart shows approximate data calculated from percentage changes. For more accurate data, a historical price API would be needed.
         </div>
       </div>
     </>

@@ -16,8 +16,5 @@ verify_jwt = false
 [functions.tokenholderapi]
 verify_jwt = false
 
-[functions.historical-price]
-verify_jwt = false
-
 [functions.combinedTokenAPI]
 verify_jwt = false
