@@ -1,7 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
-import { CORS_HEADERS } from "../fetchtokensupply/cors.ts";
-import { fetchHistoricalPriceData } from "../fetchtokensupply/marketData.ts";
+import { CORS_HEADERS } from "../fetchTokenSupply/cors.ts";
+import { fetchHistoricalPriceData } from "../fetchTokenSupply/marketData.ts";
 
 // Main function to handle the request
 async function handleRequest(req: Request) {
