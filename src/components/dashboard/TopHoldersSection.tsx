@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { CombinedTokenData } from '@/services/tokenAPIService';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
@@ -6,17 +7,21 @@ import { Shield } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
 interface TopHoldersSectionProps {
   tokenInfo: CombinedTokenData | undefined;
   isLoading: boolean;
 }
+
 const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
   tokenInfo,
   isLoading
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [displayCount, setDisplayCount] = useState(10);
-  if (isLoading) {
+  
+  // If data is loading or if holderData or topHolders is undefined, show skeleton
+  if (isLoading || !tokenInfo?.holderData?.topHolders) {
     return <div className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
           <Shield size={20} className="text-indigo-400" />
@@ -32,22 +37,38 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
         </Card>
       </div>;
   }
+  
   const topHolders = tokenInfo?.holderData?.topHolders || [];
   if (topHolders.length === 0) {
-    return null;
+    return <div className="mb-8">
+        <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+          <Shield size={20} className="text-indigo-400" />
+          Top Holders
+        </h2>
+        <Card className="bg-dehub-card border-dehub-card-border">
+          <CardContent className="py-8 text-center">
+            <p className="text-white opacity-60">No holder data available at this time.</p>
+          </CardContent>
+        </Card>
+      </div>;
   }
 
   // Filter by search query if provided
-  const filteredHolders = searchQuery ? topHolders.filter(holder => holder.address.toLowerCase().includes(searchQuery.toLowerCase())) : topHolders;
+  const filteredHolders = searchQuery 
+    ? topHolders.filter(holder => holder.address.toLowerCase().includes(searchQuery.toLowerCase())) 
+    : topHolders;
 
   // Show only the first N holders depending on the current display count
   const displayedHolders = filteredHolders.slice(0, displayCount);
+  
   const loadMore = () => {
     setDisplayCount(prevCount => Math.min(prevCount + 10, 100));
   };
+  
   const formatAddress = (address: string) => {
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
+  
   return <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
         <Shield size={20} className="text-indigo-400" />
@@ -56,9 +77,13 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
       
       <Card className="bg-dehub-card border-dehub-card-border mb-8">
         <CardHeader>
-          
           <div className="mt-4">
-            <Input placeholder="Search by address..." className="bg-dehub-input border-dehub-border text-white" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+            <Input 
+              placeholder="Search by address..." 
+              className="bg-dehub-input border-dehub-border text-white" 
+              value={searchQuery} 
+              onChange={e => setSearchQuery(e.target.value)} 
+            />
           </div>
         </CardHeader>
         <CardContent>
@@ -98,4 +123,5 @@ const TopHoldersSection: React.FC<TopHoldersSectionProps> = ({
       </Card>
     </>;
 };
+
 export default TopHoldersSection;

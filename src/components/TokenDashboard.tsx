@@ -16,10 +16,10 @@ const TokenDashboard: React.FC = () => {
   const { data: tokenInfo, isLoading, error } = useQuery({
     queryKey: ['tokenInfo'],
     queryFn: fetchCombinedTokenData,
-    retry: 2,
+    retry: 3,
     retryDelay: 1000,
-    staleTime: 60000, // Reduce stale time to 1 minute to fetch fresh data more often
-    refetchInterval: 180000 // Refetch every 3 minutes to ensure data is updated regularly
+    staleTime: 30000, // Reduce stale time to 30 seconds to fetch fresh data more often
+    refetchInterval: 60000 // Refetch every minute to ensure data is updated regularly
   });
 
   // If there's an error or tokenInfo is null, we show loading state
