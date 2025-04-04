@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { CombinedTokenData } from '@/services/tokenAPIService';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -10,21 +10,12 @@ interface PriceChartSectionProps {
   isLoading: boolean;
 }
 
-// Mock data for the chart - in a real app, you would fetch this from an API
-const mockPriceData = [
-  { name: 'Jan', price: 0.00281 },
-  { name: 'Feb', price: 0.00345 },
-  { name: 'Mar', price: 0.00421 },
-  { name: 'Apr', price: 0.00389 },
-  { name: 'May', price: 0.00412 },
-  { name: 'Jun', price: 0.00437 },
-  { name: 'Jul', price: 0.00498 },
-  { name: 'Aug', price: 0.00532 },
-  { name: 'Sep', price: 0.00486 },
-  { name: 'Oct', price: 0.00512 },
-  { name: 'Nov', price: 0.00567 },
-  { name: 'Dec', price: 0.00621 },
-];
+// Define the price data structure
+interface PriceDataPoint {
+  name: string;
+  price: number;
+  timestamp: Date;
+}
 
 const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   tokenInfo,
@@ -34,6 +25,53 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   const formatPrice = (value: number) => {
     return `$${value.toFixed(5)}`;
   };
+  
+  // Generate price data from the actual token information
+  const priceData = useMemo(() => {
+    if (!tokenInfo) return [];
+    
+    // We'll create a simple dataset using the available price metrics
+    // In a real implementation, you would fetch historical price data from an API
+    const currentPrice = tokenInfo.marketData.price;
+    
+    // Calculate prices based on percentage changes
+    const calculate = (percentage: number) => {
+      // Calculate the price in the past based on the percentage change
+      // For example, if current price is $1 and 7d change is -10%, then price 7 days ago was $1.11...
+      return currentPrice / (1 + (percentage / 100));
+    };
+    
+    const today = new Date();
+    
+    return [
+      // Generate data points based on actual percentage changes
+      {
+        name: '30d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage30d),
+        timestamp: new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: '14d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage14d),
+        timestamp: new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: '7d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage7d),
+        timestamp: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: '1d',
+        price: calculate(tokenInfo.marketData.priceChangePercentage24h),
+        timestamp: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000)
+      },
+      {
+        name: 'Now',
+        price: currentPrice,
+        timestamp: today
+      },
+    ].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()); // Sort by timestamp
+  }, [tokenInfo]);
   
   // Define config for the chart
   const chartConfig = {
@@ -76,7 +114,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
             </span>
           </div>
           <div className="text-sm text-slate-400">
-            Last 12 months
+            Last 30 days
           </div>
         </div>
         
@@ -87,7 +125,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
           >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={mockPriceData}
+                data={priceData}
                 margin={{ top: 10, right: 10, left: 10, bottom: 30 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -125,7 +163,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
         </div>
         
         <div className="text-xs text-slate-500 mt-2 text-center">
-          Note: This chart shows mockup data. Historical price data would be integrated in a production environment.
+          Note: This chart shows approximate data calculated from percentage changes. For more accurate data, a historical price API would be needed.
         </div>
       </div>
     </>
