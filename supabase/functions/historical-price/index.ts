@@ -1,6 +1,13 @@
 
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
-import { CORS_HEADERS } from "../fetchTokenSupply/cors.ts";
+
+// Define CORS headers locally instead of importing from another function
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, ApiKey",
+  "Access-Control-Max-Age": "86400",
+};
 
 interface RequestBody {
   days: number;
