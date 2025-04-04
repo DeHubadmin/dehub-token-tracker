@@ -19,8 +19,8 @@ export async function fetchMarketData() {
   }
   
   // Update with correct all-time high and low values
-  const allTimeHigh = 0.065;
-  const allTimeLow = 0.00009;  // Updated from 0.00008 to 0.00009
+  const allTimeHigh = 0.09015;
+  const allTimeLow = 0.00009;
   
   // Calculate percentage changes correctly
   const changeFromATH = ((tokenData.current_price - allTimeHigh) / allTimeHigh) * 100;

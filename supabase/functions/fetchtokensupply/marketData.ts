@@ -19,8 +19,7 @@ export async function fetchMarketData() {
   }
   
   // Update with correct all-time high and low values based on CoinGecko data
-  // From the chart image, we can see the peak was around $0.07
-  const allTimeHigh = 0.07;
+  const allTimeHigh = 0.09015;
   const allTimeLow = 0.00009;
   
   // Calculate percentage changes correctly
