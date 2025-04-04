@@ -10,7 +10,7 @@ import LoadingSpinner from '../LoadingSpinner';
 import CoinGeckoLink from './CoinGeckoLink';
 
 interface PriceDataPoint {
-  time: string;
+  time: number; // Changed from string to number
   value: number;
 }
 
@@ -19,7 +19,15 @@ interface HistoricalPriceData {
 }
 
 const formatXAxis = (tickItem: number) => {
-  return format(tickItem, "MMM dd");
+  // Make sure we're dealing with a valid timestamp
+  if (!tickItem || isNaN(Number(tickItem))) return '';
+  
+  try {
+    return format(new Date(tickItem), "MMM dd");
+  } catch (e) {
+    console.error("Error formatting date:", e, tickItem);
+    return '';
+  }
 };
 
 const formatYAxis = (tickItem: number) => {
@@ -28,12 +36,17 @@ const formatYAxis = (tickItem: number) => {
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
-    return (
-      <div className="bg-gray-800 text-white p-2 rounded-md">
-        <p className="label">{format(label, "MMM dd, yyyy")}</p>
-        <p className="intro">{`Price: $${payload[0].value.toFixed(2)}`}</p>
-      </div>
-    );
+    try {
+      return (
+        <div className="bg-gray-800 text-white p-2 rounded-md">
+          <p className="label">{format(new Date(label), "MMM dd, yyyy")}</p>
+          <p className="intro">{`Price: $${payload[0].value.toFixed(2)}`}</p>
+        </div>
+      );
+    } catch (e) {
+      console.error("Error in tooltip:", e);
+      return null;
+    }
   }
 
   return null;
@@ -51,12 +64,17 @@ const PriceChartSection = () => {
 
   useEffect(() => {
     if (data && data.prices) {
-      // Ensure prices are available and not undefined
-      const formattedData: PriceDataPoint[] = data.prices.map(([timestamp, price]) => ({
-        time: new Date(timestamp).getTime().toString(),
-        value: price,
-      }));
-      setChartData(formattedData);
+      try {
+        // Ensure prices are available and not undefined
+        const formattedData: PriceDataPoint[] = data.prices.map(([timestamp, price]) => ({
+          time: timestamp, // Store as number (timestamp) instead of string
+          value: price,
+        }));
+        setChartData(formattedData);
+      } catch (error) {
+        console.error("Error processing chart data:", error);
+        setChartData([]);
+      }
     }
   }, [data]);
 
@@ -83,30 +101,38 @@ const PriceChartSection = () => {
         <CoinGeckoLink />
       </CardHeader>
       <CardContent className="pt-0">
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="time"
-              tickFormatter={formatXAxis}
-              stroke="#6B7280"
-              interval="preserveStartEnd"
-              tickMargin={5}
-            />
-            <YAxis
-              stroke="#6B7280"
-              tickFormatter={formatYAxis}
-              tickMargin={5}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Area type="monotone" dataKey="value" stroke="#8884d8" fill="url(#priceGradient)" />
-          </AreaChart>
-        </ResponsiveContainer>
+        {chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="time"
+                tickFormatter={formatXAxis}
+                stroke="#6B7280"
+                interval="preserveStartEnd"
+                tickMargin={5}
+                type="number"
+                domain={['dataMin', 'dataMax']}
+              />
+              <YAxis
+                stroke="#6B7280"
+                tickFormatter={formatYAxis}
+                tickMargin={5}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Area type="monotone" dataKey="value" stroke="#8884d8" fill="url(#priceGradient)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-[300px] flex items-center justify-center">
+            <p className="text-gray-400">No data available for the selected time range</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
