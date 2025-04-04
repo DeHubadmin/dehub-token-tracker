@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchCombinedTokenData, CombinedTokenData } from '@/services/tokenAPIService';
 import TokenHeader from './TokenHeader';
 import MarketDataSection from './dashboard/MarketDataSection';
+import PriceChartSection from './dashboard/PriceChartSection';
 import PriceChangesSection from './dashboard/PriceChangesSection';
 import SupplyMetricsSection from './dashboard/SupplyMetricsSection';
 import ChainBreakdownSection from './dashboard/ChainBreakdownSection';
@@ -30,6 +31,12 @@ const TokenDashboard: React.FC = () => {
       <TokenHeader tokenInfo={tokenInfo} isLoading={isLoadingOrError} />
       
       <MarketDataSection 
+        tokenInfo={tokenInfo} 
+        isLoading={isLoadingOrError} 
+      />
+      
+      {/* Add the new PriceChartSection component */}
+      <PriceChartSection 
         tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
