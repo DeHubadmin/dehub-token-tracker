@@ -42,11 +42,56 @@ export interface ChainBreakdown {
   lastUpdated: string;
 }
 
+export interface HolderChange {
+  value: number;
+  formatted: string;
+  timestamp: string;
+}
+
+export interface HolderStats {
+  currentHolderCount: number;
+  formattedHolderCount: string;
+  changes: {
+    day: HolderChange;
+    week: HolderChange;
+    month: HolderChange;
+    year: HolderChange;
+  };
+  lastUpdated: string;
+}
+
+export interface TokenHolder {
+  rank: number;
+  address: string;
+  balance: number;
+  formattedBalance: string;
+  percentage: string;
+  lastChanged: string;
+}
+
+export interface TokenTransfer {
+  txHash: string;
+  from: string;
+  to: string;
+  amount: number;
+  formattedAmount: string;
+  timestamp: string;
+  chain: string;
+  scannerUrl: string;
+}
+
+export interface HolderData {
+  holderStats: HolderStats;
+  topHolders: TokenHolder[];
+  recentTransfers: TokenTransfer[];
+}
+
 export interface CombinedTokenData {
   name: string;
   symbol: string;
   supplyMetrics: SupplyMetrics;
   chainBreakdown: ChainBreakdown;
+  holderData?: HolderData;
   marketData: {
     price: number;
     formattedPrice: string;
@@ -102,6 +147,26 @@ export async function fetchChainBreakdown(): Promise<ChainBreakdown | null> {
   }
 }
 
+export async function fetchHolderData(): Promise<HolderData | null> {
+  try {
+    const { data, error } = await supabase.functions.invoke('tokenholderapi', {
+      method: 'GET'
+    });
+    
+    if (error) {
+      console.error("Error invoking tokenholderapi function:", error);
+      toast.error("Failed to fetch holder data");
+      return null;
+    }
+    
+    return data as HolderData;
+  } catch (error) {
+    console.error("Failed to fetch holder data:", error);
+    toast.error("Failed to fetch holder data");
+    return null;
+  }
+}
+
 export async function fetchCombinedTokenData(): Promise<CombinedTokenData | null> {
   try {
     const { data, error } = await supabase.functions.invoke('combinedtokenapi', {
@@ -114,7 +179,16 @@ export async function fetchCombinedTokenData(): Promise<CombinedTokenData | null
       return null;
     }
     
-    return data as CombinedTokenData;
+    // Fetch holder data separately
+    const holderData = await fetchHolderData();
+    
+    // Combine the data
+    const combinedData = {
+      ...data as CombinedTokenData,
+      holderData: holderData || undefined
+    };
+    
+    return combinedData;
   } catch (error) {
     console.error("Failed to fetch combined token data:", error);
     toast.error("Failed to fetch token data");

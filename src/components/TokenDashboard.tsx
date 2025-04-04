@@ -7,6 +7,9 @@ import MarketDataSection from './dashboard/MarketDataSection';
 import PriceChangesSection from './dashboard/PriceChangesSection';
 import SupplyMetricsSection from './dashboard/SupplyMetricsSection';
 import ChainBreakdownSection from './dashboard/ChainBreakdownSection';
+import HolderStatsSection from './dashboard/HolderStatsSection';
+import TopHoldersSection from './dashboard/TopHoldersSection';
+import RecentTransfersSection from './dashboard/RecentTransfersSection';
 import LastUpdatedInfo from './dashboard/LastUpdatedInfo';
 
 const TokenDashboard: React.FC = () => {
@@ -39,7 +42,22 @@ const TokenDashboard: React.FC = () => {
         isLoading={isLoadingOrError} 
       />
       
+      <HolderStatsSection 
+        tokenInfo={tokenInfo} 
+        isLoading={isLoadingOrError} 
+      />
+      
       <ChainBreakdownSection 
+        tokenInfo={tokenInfo} 
+        isLoading={isLoadingOrError} 
+      />
+      
+      <TopHoldersSection 
+        tokenInfo={tokenInfo} 
+        isLoading={isLoadingOrError} 
+      />
+      
+      <RecentTransfersSection 
         tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
