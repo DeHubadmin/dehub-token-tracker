@@ -74,7 +74,7 @@ const PriceChangeCard: React.FC<PriceChangeCardProps> = ({
       
       {timeframe && (
         <p className="text-xs text-slate-400 mt-1">
-          {timeframe.startsWith('ATH:') ? timeframe : `Over the last ${timeframe}`}
+          {timeframe.startsWith('ATH:') ? timeframe : (timeframe === 'all time' ? 'ATL: 0.00009' : `Over the last ${timeframe}`)}
         </p>
       )}
     </Card>
