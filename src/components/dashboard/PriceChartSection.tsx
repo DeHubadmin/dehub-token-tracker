@@ -14,6 +14,10 @@ interface PriceDataPoint {
   value: number;
 }
 
+interface HistoricalPriceData {
+  prices: [number, number][];
+}
+
 const formatXAxis = (tickItem: number) => {
   return format(tickItem, "MMM dd");
 };
@@ -40,13 +44,13 @@ const PriceChartSection = () => {
   const [timeRange, setTimeRange] = useState("365"); // Default to 365 days
   const [chartData, setChartData] = useState<PriceDataPoint[]>([]);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<HistoricalPriceData>({
     queryKey: ['historicalPriceData', timeRange],
     queryFn: () => fetchHistoricalPriceData(parseInt(timeRange))
   });
 
   useEffect(() => {
-    if (data && 'prices' in data) {
+    if (data && data.prices) {
       // Ensure prices are available and not undefined
       const formattedData: PriceDataPoint[] = data.prices.map(([timestamp, price]) => ({
         time: new Date(timestamp).getTime().toString(),
