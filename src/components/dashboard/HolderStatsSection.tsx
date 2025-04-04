@@ -4,6 +4,7 @@ import { CombinedTokenData } from '@/services/tokenAPIService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, TrendingUp, TrendingDown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import MarketDataCard from '../MarketDataCard';
 
 interface HolderStatsSectionProps {
   tokenInfo: CombinedTokenData | undefined;
@@ -21,19 +22,14 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
           <Users size={20} className="text-indigo-400" />
           <Skeleton className="h-8 w-32" />
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, index) => (
-            <Card key={index} className="bg-dehub-card border-dehub-card-border">
-              <CardHeader className="pb-2">
-                <Skeleton className="h-6 w-24" />
-              </CardHeader>
-              <CardContent>
-                <div>
-                  <Skeleton className="h-8 w-20" />
-                  <Skeleton className="h-4 w-32 mt-2" />
-                </div>
-              </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, index) => (
+            <MarketDataCard
+              key={index}
+              title=""
+              value=""
+              isLoading={true}
+            />
           ))}
         </div>
       </div>
@@ -54,70 +50,46 @@ const HolderStatsSection: React.FC<HolderStatsSectionProps> = ({
       </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        <Card className="bg-dehub-card border-dehub-card-border col-span-1">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-white/80">Current Holders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{holderStats.formattedHolderCount}</div>
-            <p className="text-xs text-white/60 mt-1">Last updated: {new Date(holderStats.lastUpdated).toLocaleString()}</p>
-          </CardContent>
-        </Card>
-        
-        <HolderChangeCard 
-          title="24h Change" 
-          value={holderStats.changes.day.value} 
-          formatted={holderStats.changes.day.formatted} 
+        <MarketDataCard
+          title="Current Holders"
+          value={holderStats.formattedHolderCount}
+          description={`Last updated: ${new Date(holderStats.lastUpdated).toLocaleString()}`}
+          icon={<Users size={24} />}
         />
         
-        <HolderChangeCard 
-          title="7d Change" 
-          value={holderStats.changes.week.value} 
-          formatted={holderStats.changes.week.formatted} 
+        <MarketDataCard
+          title="24h Change"
+          value={holderStats.changes.day.formatted}
+          description="From previous period"
+          icon={holderStats.changes.day.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
+          className={holderStats.changes.day.value >= 0 ? "text-green-500" : "text-red-500"}
         />
         
-        <HolderChangeCard 
-          title="30d Change" 
-          value={holderStats.changes.month.value} 
-          formatted={holderStats.changes.month.formatted} 
+        <MarketDataCard
+          title="7d Change"
+          value={holderStats.changes.week.formatted}
+          description="From previous period"
+          icon={holderStats.changes.week.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
+          className={holderStats.changes.week.value >= 0 ? "text-green-500" : "text-red-500"}
         />
         
-        <HolderChangeCard 
-          title="1y Change" 
-          value={holderStats.changes.year.value} 
-          formatted={holderStats.changes.year.formatted} 
+        <MarketDataCard
+          title="30d Change"
+          value={holderStats.changes.month.formatted}
+          description="From previous period"
+          icon={holderStats.changes.month.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
+          className={holderStats.changes.month.value >= 0 ? "text-green-500" : "text-red-500"}
+        />
+        
+        <MarketDataCard
+          title="1y Change"
+          value={holderStats.changes.year.formatted}
+          description="From previous period"
+          icon={holderStats.changes.year.value >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
+          className={holderStats.changes.year.value >= 0 ? "text-green-500" : "text-red-500"}
         />
       </div>
     </>
-  );
-};
-
-interface HolderChangeCardProps {
-  title: string;
-  value: number;
-  formatted: string;
-}
-
-const HolderChangeCard: React.FC<HolderChangeCardProps> = ({ title, value, formatted }) => {
-  const isPositive = value >= 0;
-  
-  return (
-    <Card className="bg-dehub-card border-dehub-card-border">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-white/80">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className={`flex items-center text-2xl font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-          {isPositive ? (
-            <TrendingUp size={20} className="mr-2" />
-          ) : (
-            <TrendingDown size={20} className="mr-2" />
-          )}
-          <span>{formatted}</span>
-        </div>
-        <p className="text-xs text-white/60 mt-1">From previous period</p>
-      </CardContent>
-    </Card>
   );
 };
 

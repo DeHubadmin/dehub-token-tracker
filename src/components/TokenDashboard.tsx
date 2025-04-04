@@ -42,12 +42,12 @@ const TokenDashboard: React.FC = () => {
         isLoading={isLoadingOrError} 
       />
       
-      <HolderStatsSection 
+      <ChainBreakdownSection 
         tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
       
-      <ChainBreakdownSection 
+      <HolderStatsSection 
         tokenInfo={tokenInfo} 
         isLoading={isLoadingOrError} 
       />
