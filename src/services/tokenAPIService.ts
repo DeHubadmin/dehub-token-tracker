@@ -149,6 +149,7 @@ export async function fetchChainBreakdown(): Promise<ChainBreakdown | null> {
 
 export async function fetchHolderData(): Promise<HolderData | null> {
   try {
+    console.log("Fetching holder data from tokenholderapi");
     const { data, error } = await supabase.functions.invoke('tokenholderapi', {
       method: 'GET'
     });
@@ -159,6 +160,7 @@ export async function fetchHolderData(): Promise<HolderData | null> {
       return null;
     }
     
+    console.log("Holder data response:", data);
     return data as HolderData;
   } catch (error) {
     console.error("Failed to fetch holder data:", error);
@@ -179,7 +181,7 @@ export async function fetchCombinedTokenData(): Promise<CombinedTokenData | null
       return null;
     }
     
-    // Fetch holder data separately
+    // Fetch holder data separately to get real-time data
     const holderData = await fetchHolderData();
     
     // Combine the data
