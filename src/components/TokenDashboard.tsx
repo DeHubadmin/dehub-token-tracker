@@ -32,7 +32,8 @@ const TokenDashboard: React.FC = () => {
     }
   });
 
-  const isLoadingOrError = isLoading || error || !tokenInfo;
+  // Create a boolean that's true if we're loading, have an error, or don't have data
+  const isLoadingOrError = isLoading || error !== null || !tokenInfo;
 
   return (
     <div className="container px-4 py-8 mt-4 mx-auto max-w-6xl">
