@@ -23,7 +23,8 @@ const formatXAxis = (tickItem: number) => {
   if (!tickItem || isNaN(Number(tickItem))) return '';
   
   try {
-    return format(new Date(tickItem), "MMM dd");
+    // Format as "MMM yy" to get "Apr 24" format
+    return format(new Date(tickItem), "MMM yy");
   } catch (e) {
     console.error("Error formatting date:", e, tickItem);
     return '';
@@ -39,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     try {
       return (
         <div className="bg-gray-800 text-white p-2 rounded-md">
-          <p className="label">{format(new Date(label), "MMM dd, yyyy")}</p>
+          <p className="label">{format(new Date(label), "MMM yy, yyyy")}</p>
           <p className="intro">{`Price: $${payload[0].value.toFixed(5)}`}</p> {/* Changed from 2 to 5 decimal places */}
         </div>
       );
