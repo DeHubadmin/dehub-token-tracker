@@ -4,87 +4,62 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { CombinedTokenData } from '@/services/tokenAPIService';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { TrendingUp } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchHistoricalPriceData } from '@/services/historicalPriceService';
 
 interface PriceChartSectionProps {
   tokenInfo: CombinedTokenData | undefined;
   isLoading: boolean;
 }
 
-// Define the price data structure
-interface PriceDataPoint {
-  name: string;
-  price: number;
-  timestamp: Date;
-}
-
 const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   tokenInfo,
   isLoading
 }) => {
+  // Fetch 60 days of historical price data
+  const { data: historicalData, isLoading: isHistoricalLoading } = useQuery({
+    queryKey: ['historicalPriceData', 60],
+    queryFn: () => fetchHistoricalPriceData(60),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: !isLoading && !!tokenInfo
+  });
+  
   // Format price for display
   const formatPrice = (value: number) => {
     return `$${value.toFixed(5)}`;
   };
   
-  // Generate price data from the actual token information
-  const priceData = useMemo(() => {
-    if (!tokenInfo) return [];
-    
-    // We'll create a simple dataset using the available price metrics
-    // In a real implementation, you would fetch historical price data from an API
-    const currentPrice = tokenInfo.marketData.price;
-    
-    // Calculate prices based on percentage changes
-    const calculate = (percentage: number) => {
-      // Calculate the price in the past based on the percentage change
-      // For example, if current price is $1 and 7d change is -10%, then price 7 days ago was $1.11...
-      return currentPrice / (1 + (percentage / 100));
-    };
-    
-    const today = new Date();
-    
-    return [
-      // Generate data points based on actual percentage changes
-      {
-        name: '30d',
-        price: calculate(tokenInfo.marketData.priceChangePercentage30d),
-        timestamp: new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
-      },
-      {
-        name: '14d',
-        price: calculate(tokenInfo.marketData.priceChangePercentage14d),
-        timestamp: new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000)
-      },
-      {
-        name: '7d',
-        price: calculate(tokenInfo.marketData.priceChangePercentage7d),
-        timestamp: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
-      },
-      {
-        name: '1d',
-        price: calculate(tokenInfo.marketData.priceChangePercentage24h),
-        timestamp: new Date(today.getTime() - 1 * 24 * 60 * 60 * 1000)
-      },
-      {
-        name: 'Now',
-        price: currentPrice,
-        timestamp: today
-      },
-    ].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()); // Sort by timestamp
-  }, [tokenInfo]);
+  // Format date for display
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
   
+  // Process chart data
+  const chartData = useMemo(() => {
+    if (!historicalData) return [];
+    
+    return historicalData.prices.map(([timestamp, price]) => ({
+      timestamp,
+      date: formatDate(timestamp),
+      price
+    }));
+  }, [historicalData]);
+
   // Define config for the chart
   const chartConfig = {
     price: {
       label: 'Price',
       theme: {
-        light: '#33C3F0',
-        dark: '#33C3F0'
+        light: '#FF3B69',
+        dark: '#FF3B69'
       }
     }
   };
 
-  if (isLoading) {
+  const isChartLoading = isLoading || isHistoricalLoading || !historicalData;
+
+  if (isChartLoading) {
     return (
       <div className="mb-8">
         <div className="h-8 w-48 bg-slate-700 rounded animate-pulse mb-4"></div>
@@ -94,15 +69,23 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   }
 
   if (!tokenInfo) return null;
+  
+  // Find min and max price for domain calculation
+  const minPrice = Math.min(...chartData.map(item => item.price));
+  const maxPrice = Math.max(...chartData.map(item => item.price));
+  
+  // Add padding to the domain
+  const yDomainMin = minPrice * 0.9;
+  const yDomainMax = maxPrice * 1.1;
 
   return (
     <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
         <TrendingUp size={20} className="text-blue-400" />
-        Price Chart
+        Price Chart (60 Days)
       </h2>
       
-      <div className="p-4 bg-slate-800 rounded-lg mb-8">
+      <div className="p-4 bg-[#0D1B2A] rounded-lg mb-8">
         <div className="mb-4 flex justify-between items-center">
           <div>
             <span className="text-lg font-bold text-white">
@@ -114,7 +97,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
             </span>
           </div>
           <div className="text-sm text-slate-400">
-            Last 30 days
+            Last 60 days
           </div>
         </div>
         
@@ -125,20 +108,22 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
           >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={priceData}
+                data={chartData}
                 margin={{ top: 10, right: 10, left: 10, bottom: 30 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
                 <XAxis 
-                  dataKey="name"
+                  dataKey="date"
                   tick={{ fill: '#9ca3af' }}
-                  axisLine={{ stroke: '#4b5563' }}
+                  axisLine={{ stroke: '#1E3A5F' }}
+                  minTickGap={30}
                 />
                 <YAxis 
                   tickFormatter={formatPrice}
                   tick={{ fill: '#9ca3af' }}
-                  axisLine={{ stroke: '#4b5563' }}
-                  domain={['auto', 'auto']}
+                  axisLine={{ stroke: '#1E3A5F' }}
+                  domain={[yDomainMin, yDomainMax]}
+                  scale="log"
                 />
                 <ChartTooltip
                   content={
@@ -152,18 +137,14 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
                 <Line
                   type="monotone"
                   dataKey="price"
-                  stroke="#33C3F0"
+                  stroke="#FF3B69"
                   strokeWidth={2}
-                  dot={{ r: 3, fill: '#33C3F0', stroke: '#33C3F0', strokeWidth: 1 }}
-                  activeDot={{ r: 5, fill: '#33C3F0', stroke: '#fff', strokeWidth: 2 }}
+                  dot={false}
+                  activeDot={{ r: 5, fill: '#FF3B69', stroke: '#fff', strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </ChartContainer>
-        </div>
-        
-        <div className="text-xs text-slate-500 mt-2 text-center">
-          Note: This chart shows approximate data calculated from percentage changes. For more accurate data, a historical price API would be needed.
         </div>
       </div>
     </>
