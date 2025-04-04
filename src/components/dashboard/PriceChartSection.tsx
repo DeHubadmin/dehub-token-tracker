@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -39,17 +40,13 @@ const PriceChartSection = () => {
   const [timeRange, setTimeRange] = useState("365"); // Default to 365 days
   const [chartData, setChartData] = useState<PriceDataPoint[]>([]);
 
-  const { data, isLoading, isError } = useQuery(
-    ['historicalPriceData', timeRange],
-    () => fetchHistoricalPriceData(parseInt(timeRange)),
-    {
-      refetchOnWindowFocus: false,
-      retry: false,
-    }
-  );
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['historicalPriceData', timeRange],
+    queryFn: () => fetchHistoricalPriceData(parseInt(timeRange))
+  });
 
   useEffect(() => {
-    if (data && data.prices) {
+    if (data && 'prices' in data) {
       // Ensure prices are available and not undefined
       const formattedData: PriceDataPoint[] = data.prices.map(([timestamp, price]) => ({
         time: new Date(timestamp).getTime().toString(),

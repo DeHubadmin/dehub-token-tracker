@@ -35,11 +35,8 @@ const TokenDashboard: React.FC = () => {
         isLoading={isLoadingOrError} 
       />
       
-      {/* Add the new PriceChartSection component */}
-      <PriceChartSection 
-        tokenInfo={tokenInfo} 
-        isLoading={isLoadingOrError} 
-      />
+      {/* The PriceChartSection component doesn't need props as it fetches its own data */}
+      <PriceChartSection />
       
       <PriceChangesSection 
         tokenInfo={tokenInfo} 
