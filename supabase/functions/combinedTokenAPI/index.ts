@@ -92,8 +92,23 @@ async function handleRequest(req: Request) {
         formattedMarketCap: tokenData.formattedMarketCap,
         totalVolume: tokenData.totalVolume,
         formattedTotalVolume: tokenData.formattedTotalVolume,
+        priceChangePercentage1h: tokenData.priceChangePercentage1h,
         priceChangePercentage24h: tokenData.priceChangePercentage24h,
         priceChangePercentage7d: tokenData.priceChangePercentage7d,
+        priceChangePercentage14d: tokenData.priceChangePercentage14d,
+        priceChangePercentage30d: tokenData.priceChangePercentage30d,
+        priceChangePercentage1y: tokenData.priceChangePercentage1y,
+        priceChangePercentageAllTime: tokenData.priceChangePercentageAllTime,
+        priceChangePercentageFromATH: tokenData.priceChangePercentageFromATH,
+        multiplesToATH: tokenData.multiplesToATH,
+        allTimeHigh: tokenData.allTimeHigh,
+        formattedAllTimeHigh: tokenData.formattedAllTimeHigh,
+        allTimeLow: tokenData.allTimeLow,
+        formattedAllTimeLow: tokenData.formattedAllTimeLow,
+        high24h: tokenData.high24h,
+        formattedHigh24h: tokenData.formattedHigh24h,
+        low24h: tokenData.low24h,
+        formattedLow24h: tokenData.formattedLow24h,
         lastUpdated: tokenData.lastUpdated
       }
     };

@@ -99,8 +99,23 @@ export interface CombinedTokenData {
     formattedMarketCap: string;
     totalVolume: number;
     formattedTotalVolume: string;
+    priceChangePercentage1h: number;
     priceChangePercentage24h: number;
     priceChangePercentage7d: number;
+    priceChangePercentage14d: number;
+    priceChangePercentage30d: number;
+    priceChangePercentage1y: number;
+    priceChangePercentageAllTime: number;
+    priceChangePercentageFromATH: number;
+    multiplesToATH: number;
+    allTimeHigh: number;
+    formattedAllTimeHigh: string;
+    allTimeLow: number;
+    formattedAllTimeLow: string;
+    high24h: number;
+    formattedHigh24h: string;
+    low24h: number;
+    formattedLow24h: string;
     lastUpdated: string;
   };
 }
