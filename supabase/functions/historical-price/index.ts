@@ -10,7 +10,8 @@ const CORS_HEADERS = {
 };
 
 interface RequestBody {
-  days: number;
+  days?: number;
+  max?: boolean;
 }
 
 // Main function to handle the request
@@ -26,6 +27,7 @@ async function handleRequest(req: Request) {
   try {
     // Parse request body
     let days = 365; // Default to 365 days
+    let useMaxRange = false;
     
     if (req.method === "POST") {
       try {
@@ -33,16 +35,25 @@ async function handleRequest(req: Request) {
         if (body.days && typeof body.days === 'number') {
           days = body.days;
         }
+        if (body.max === true) {
+          useMaxRange = true;
+        }
       } catch (e) {
         console.error("Failed to parse request body:", e);
         // Continue with default value
       }
     }
     
+    // Determine the appropriate endpoint based on the request
+    let endpoint = `https://api.coingecko.com/api/v3/coins/dehub/market_chart?vs_currency=usd&days=${days}&interval=daily`;
+    
+    // If max range is requested, use the "max" parameter instead of days
+    if (useMaxRange) {
+      endpoint = `https://api.coingecko.com/api/v3/coins/dehub/market_chart?vs_currency=usd&days=max&interval=daily`;
+    }
+    
     // Fetch historical price data from CoinGecko
-    const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/dehub/market_chart?vs_currency=usd&days=${days}&interval=daily`
-    );
+    const response = await fetch(endpoint);
     
     if (!response.ok) {
       throw new Error(`CoinGecko API returned ${response.status}: ${response.statusText}`);

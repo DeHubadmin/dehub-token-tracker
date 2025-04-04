@@ -5,7 +5,7 @@ import { CombinedTokenData } from '@/services/tokenAPIService';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { TrendingUp } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchHistoricalPriceData } from '@/services/historicalPriceService';
+import { fetchMaxHistoricalPriceData } from '@/services/historicalPriceService';
 
 interface PriceChartSectionProps {
   tokenInfo: CombinedTokenData | undefined;
@@ -16,10 +16,10 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   tokenInfo,
   isLoading
 }) => {
-  // Fetch 365 days of historical price data
+  // Fetch maximum historical price data (since launch)
   const { data: historicalData, isLoading: isHistoricalLoading } = useQuery({
-    queryKey: ['historicalPriceData', 365],
-    queryFn: () => fetchHistoricalPriceData(365),
+    queryKey: ['historicalPriceData', 'max'],
+    queryFn: () => fetchMaxHistoricalPriceData(),
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: !isLoading && !!tokenInfo
   });
@@ -32,7 +32,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
   // Format date for display
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
   };
   
   // Process chart data
@@ -44,6 +44,15 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
       date: formatDate(timestamp),
       price
     }));
+  }, [historicalData]);
+
+  // Get the earliest date from the data for the chart title
+  const earliestDate = useMemo(() => {
+    if (!historicalData || historicalData.prices.length === 0) return "Launch";
+    
+    const firstTimestamp = historicalData.prices[0][0];
+    const date = new Date(firstTimestamp);
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   }, [historicalData]);
 
   // Define config for the chart
@@ -82,7 +91,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
     <>
       <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
         <TrendingUp size={20} className="text-blue-400" />
-        Price Chart (1 Year)
+        Price Chart (Since {earliestDate})
       </h2>
       
       <div className="p-4 bg-[#0D1B2A] rounded-lg mb-8 w-full">
@@ -97,7 +106,7 @@ const PriceChartSection: React.FC<PriceChartSectionProps> = ({
             </span>
           </div>
           <div className="text-sm text-slate-400">
-            Last 365 days
+            Since {earliestDate}
           </div>
         </div>
         
