@@ -9,505 +9,222 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      bosc: {
+      badges: {
         Row: {
+          color: string | null
           created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
-      BOSC: {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
-      comments: {
-        Row: {
-          author: string
-          author_name: string
-          author_profile_pic: string | null
-          content: string
-          created_at: string
-          dislikes: number | null
+          criteria_type: string
+          criteria_value: number | null
+          description: string | null
+          icon_url: string | null
           id: string
-          likes: number | null
-          scammer_id: string | null
-          views: number | null
+          name: string
         }
         Insert: {
-          author: string
-          author_name: string
-          author_profile_pic?: string | null
-          content: string
+          color?: string | null
           created_at?: string
-          dislikes?: number | null
-          id: string
-          likes?: number | null
-          scammer_id?: string | null
-          views?: number | null
-        }
-        Update: {
-          author?: string
-          author_name?: string
-          author_profile_pic?: string | null
-          content?: string
-          created_at?: string
-          dislikes?: number | null
+          criteria_type: string
+          criteria_value?: number | null
+          description?: string | null
+          icon_url?: string | null
           id?: string
-          likes?: number | null
-          scammer_id?: string | null
-          views?: number | null
+          name: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          criteria_type?: string
+          criteria_value?: number | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      chat_groups: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          minimum_tokens: number | null
+          name: string
+          token_address: string
+          token_symbol: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_tokens?: number | null
+          name: string
+          token_address: string
+          token_symbol: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          minimum_tokens?: number | null
+          name?: string
+          token_address?: string
+          token_symbol?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      group_memberships: {
+        Row: {
+          group_id: string
+          id: string
+          is_verified: boolean | null
+          joined_at: string
+          last_verified_at: string | null
+          token_balance: number | null
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          is_verified?: boolean | null
+          joined_at?: string
+          last_verified_at?: string | null
+          token_balance?: number | null
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          is_verified?: boolean | null
+          joined_at?: string
+          last_verified_at?: string | null
+          token_balance?: number | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "comments_scammer_id_fkey"
-            columns: ["scammer_id"]
+            foreignKeyName: "group_memberships_group_id_fkey"
+            columns: ["group_id"]
             isOneToOne: false
-            referencedRelation: "deleted_scammers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "comments_scammer_id_fkey"
-            columns: ["scammer_id"]
-            isOneToOne: false
-            referencedRelation: "scammers"
+            referencedRelation: "chat_groups"
             referencedColumns: ["id"]
           },
         ]
       }
-      holder_stats: {
+      messages: {
         Row: {
-          base_chain_holders: number
-          bnb_chain_holders: number
-          day_change_percent: number
-          id: number
-          last_updated: string | null
-          month_change_percent: number
-          total_holders: number
-          week_change_percent: number
-          year_change_percent: number
-        }
-        Insert: {
-          base_chain_holders: number
-          bnb_chain_holders: number
-          day_change_percent: number
-          id?: number
-          last_updated?: string | null
-          month_change_percent: number
-          total_holders: number
-          week_change_percent: number
-          year_change_percent: number
-        }
-        Update: {
-          base_chain_holders?: number
-          bnb_chain_holders?: number
-          day_change_percent?: number
-          id?: number
-          last_updated?: string | null
-          month_change_percent?: number
-          total_holders?: number
-          week_change_percent?: number
-          year_change_percent?: number
-        }
-        Relationships: []
-      }
-      lawsuit_signatures: {
-        Row: {
+          content: string
           created_at: string
-          email: string
-          full_name: string
+          group_id: string
           id: string
-          realised_losses: number | null
-          residential_address: string
-          terms_accepted: boolean
-          unrealised_losses: number | null
-          wallet_address: string
+          message_type: string | null
+          updated_at: string
+          user_id: string
         }
         Insert: {
+          content: string
           created_at?: string
-          email: string
-          full_name: string
+          group_id: string
           id?: string
-          realised_losses?: number | null
-          residential_address: string
-          terms_accepted?: boolean
-          unrealised_losses?: number | null
-          wallet_address: string
+          message_type?: string | null
+          updated_at?: string
+          user_id: string
         }
         Update: {
+          content?: string
           created_at?: string
-          email?: string
-          full_name?: string
+          group_id?: string
           id?: string
-          realised_losses?: number | null
-          residential_address?: string
-          terms_accepted?: boolean
-          unrealised_losses?: number | null
-          wallet_address?: string
-        }
-        Relationships: []
-      }
-      leaderboard_stats: {
-        Row: {
-          id: string
-          total_bounty: number | null
-          total_comments: number | null
-          total_likes: number | null
-          total_reports: number | null
-          total_views: number | null
-          updated_at: string | null
-          wallet_address: string
-        }
-        Insert: {
-          id?: string
-          total_bounty?: number | null
-          total_comments?: number | null
-          total_likes?: number | null
-          total_reports?: number | null
-          total_views?: number | null
-          updated_at?: string | null
-          wallet_address: string
-        }
-        Update: {
-          id?: string
-          total_bounty?: number | null
-          total_comments?: number | null
-          total_likes?: number | null
-          total_reports?: number | null
-          total_views?: number | null
-          updated_at?: string | null
-          wallet_address?: string
+          message_type?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "leaderboard_stats_wallet_address_fkey"
-            columns: ["wallet_address"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["wallet_address"]
+            foreignKeyName: "messages_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "chat_groups"
+            referencedColumns: ["id"]
           },
         ]
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           bio: string | null
           created_at: string
-          display_name: string
           id: string
-          profile_pic_url: string | null
+          updated_at: string
           username: string | null
-          wallet_address: string
-          website_link: string | null
-          x_link: string | null
-        }
-        Insert: {
-          bio?: string | null
-          created_at?: string
-          display_name: string
-          id: string
-          profile_pic_url?: string | null
-          username?: string | null
-          wallet_address: string
-          website_link?: string | null
-          x_link?: string | null
-        }
-        Update: {
-          bio?: string | null
-          created_at?: string
-          display_name?: string
-          id?: string
-          profile_pic_url?: string | null
-          username?: string | null
-          wallet_address?: string
-          website_link?: string | null
-          x_link?: string | null
-        }
-        Relationships: []
-      }
-      scammer_views: {
-        Row: {
-          id: string
-          ip_hash: string
-          scammer_id: string
-          viewed_at: string | null
-        }
-        Insert: {
-          id?: string
-          ip_hash: string
-          scammer_id: string
-          viewed_at?: string | null
-        }
-        Update: {
-          id?: string
-          ip_hash?: string
-          scammer_id?: string
-          viewed_at?: string | null
-        }
-        Relationships: []
-      }
-      scammers: {
-        Row: {
-          accomplices: Json | null
-          accused_of: string | null
-          added_by: string | null
-          aliases: Json | null
-          bounty_amount: number | null
-          comments: Json | null
-          date_added: string
-          deleted_at: string | null
-          dislikes: number | null
-          id: string
-          likes: number | null
-          links: Json | null
-          name: string
-          official_response: string | null
-          photo_url: string | null
-          shares: number | null
-          views: number | null
           wallet_address: string | null
-          x_link: string | null
         }
         Insert: {
-          accomplices?: Json | null
-          accused_of?: string | null
-          added_by?: string | null
-          aliases?: Json | null
-          bounty_amount?: number | null
-          comments?: Json | null
-          date_added?: string
-          deleted_at?: string | null
-          dislikes?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
           id: string
-          likes?: number | null
-          links?: Json | null
-          name: string
-          official_response?: string | null
-          photo_url?: string | null
-          shares?: number | null
-          views?: number | null
+          updated_at?: string
+          username?: string | null
           wallet_address?: string | null
-          x_link?: string | null
         }
         Update: {
-          accomplices?: Json | null
-          accused_of?: string | null
-          added_by?: string | null
-          aliases?: Json | null
-          bounty_amount?: number | null
-          comments?: Json | null
-          date_added?: string
-          deleted_at?: string | null
-          dislikes?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
           id?: string
-          likes?: number | null
-          links?: Json | null
-          name?: string
-          official_response?: string | null
-          photo_url?: string | null
-          shares?: number | null
-          views?: number | null
+          updated_at?: string
+          username?: string | null
           wallet_address?: string | null
-          x_link?: string | null
         }
         Relationships: []
       }
-      token_holders: {
+      user_badges: {
         Row: {
-          address: string
-          balance: number
-          chain: string
-          id: number
-          last_updated: string | null
-          percentage: number
-          rank: number
-        }
-        Insert: {
-          address: string
-          balance: number
-          chain: string
-          id?: number
-          last_updated?: string | null
-          percentage: number
-          rank: number
-        }
-        Update: {
-          address?: string
-          balance?: number
-          chain?: string
-          id?: number
-          last_updated?: string | null
-          percentage?: number
-          rank?: number
-        }
-        Relationships: []
-      }
-      user_comment_interactions: {
-        Row: {
-          comment_id: string
-          disliked: boolean | null
+          badge_id: string
+          earned_at: string
           id: string
-          last_updated: string | null
-          liked: boolean | null
           user_id: string
         }
         Insert: {
-          comment_id: string
-          disliked?: boolean | null
+          badge_id: string
+          earned_at?: string
           id?: string
-          last_updated?: string | null
-          liked?: boolean | null
           user_id: string
         }
         Update: {
-          comment_id?: string
-          disliked?: boolean | null
+          badge_id?: string
+          earned_at?: string
           id?: string
-          last_updated?: string | null
-          liked?: boolean | null
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_comment_interactions_comment_id_fkey"
-            columns: ["comment_id"]
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
             isOneToOne: false
-            referencedRelation: "comments"
+            referencedRelation: "badges"
             referencedColumns: ["id"]
           },
         ]
       }
-      user_scammer_interactions: {
-        Row: {
-          disliked: boolean | null
-          id: string
-          last_updated: string | null
-          liked: boolean | null
-          scammer_id: string
-          user_id: string
-        }
-        Insert: {
-          disliked?: boolean | null
-          id?: string
-          last_updated?: string | null
-          liked?: boolean | null
-          scammer_id: string
-          user_id: string
-        }
-        Update: {
-          disliked?: boolean | null
-          id?: string
-          last_updated?: string | null
-          liked?: boolean | null
-          scammer_id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
-      deleted_scammers: {
-        Row: {
-          accomplices: Json | null
-          accused_of: string | null
-          added_by: string | null
-          aliases: Json | null
-          bounty_amount: number | null
-          comments: Json | null
-          date_added: string | null
-          deleted_at: string | null
-          dislikes: number | null
-          id: string | null
-          likes: number | null
-          links: Json | null
-          name: string | null
-          official_response: string | null
-          photo_url: string | null
-          shares: number | null
-          views: number | null
-          wallet_address: string | null
-          x_link: string | null
-        }
-        Insert: {
-          accomplices?: Json | null
-          accused_of?: string | null
-          added_by?: string | null
-          aliases?: Json | null
-          bounty_amount?: number | null
-          comments?: Json | null
-          date_added?: string | null
-          deleted_at?: string | null
-          dislikes?: number | null
-          id?: string | null
-          likes?: number | null
-          links?: Json | null
-          name?: string | null
-          official_response?: string | null
-          photo_url?: string | null
-          shares?: number | null
-          views?: number | null
-          wallet_address?: string | null
-          x_link?: string | null
-        }
-        Update: {
-          accomplices?: Json | null
-          accused_of?: string | null
-          added_by?: string | null
-          aliases?: Json | null
-          bounty_amount?: number | null
-          comments?: Json | null
-          date_added?: string | null
-          deleted_at?: string | null
-          dislikes?: number | null
-          id?: string | null
-          likes?: number | null
-          links?: Json | null
-          name?: string | null
-          official_response?: string | null
-          photo_url?: string | null
-          shares?: number | null
-          views?: number | null
-          wallet_address?: string | null
-          x_link?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      get_latest_holder_stats: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          total_holders: number
-          bnb_chain_holders: number
-          base_chain_holders: number
-          day_change_percent: number
-          week_change_percent: number
-          month_change_percent: number
-          year_change_percent: number
-          last_updated: string
-        }[]
-      }
-      get_signature_count: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
@@ -518,27 +235,29 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type DefaultSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -546,20 +265,22 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -567,20 +288,22 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -588,21 +311,23 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema["Enums"]
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema["CompositeTypes"]
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database
@@ -611,6 +336,12 @@ export type CompositeTypes<
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const
